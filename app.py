@@ -24,6 +24,7 @@ FLORENCE_MODEL = "microsoft/Florence-2-base"
 FLORENCE_REVISION = "5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac"
 FLORENCE_TASK = "<MORE_DETAILED_CAPTION>"
 STORY_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"
+TTS_MODEL = "hexgrad/Kokoro-82M"
 NARRATION_SPEED = 0.95
 VOICE_OPTIONS = {
     "🧚 Bella — Warm American": "af_bella",
@@ -203,7 +204,7 @@ def generate_story(description: str) -> str:
 
 def load_kokoro_model():
     """Load Kokoro only for the current narration, then release it."""
-    return KModel(repo_id="hexgrad/Kokoro-82M").to("cpu").eval()
+    return KModel(repo_id=TTS_MODEL).to("cpu").eval()
 
 
 def load_tts_model(lang_code: str):
@@ -213,7 +214,7 @@ def load_tts_model(lang_code: str):
             "installed at build time; runtime package installation is not supported."
         )
     return KPipeline(
-        lang_code=lang_code, repo_id="hexgrad/Kokoro-82M", model=load_kokoro_model(),
+        lang_code=lang_code, repo_id=TTS_MODEL, model=load_kokoro_model(),
     )
 
 
