@@ -410,33 +410,65 @@ def inject_apple_style():
         }
 
         [data-testid="stFileUploaderDropzone"] {
-            min-height: 88px;
-            padding: .55rem .75rem !important;
-            border: 1.5px dashed rgba(255,255,255,.19) !important;
-            border-radius: 18px !important;
-            background: rgba(255,255,255,.045) !important;
+            min-height: 3rem !important;
+            height: 3rem !important;
+            padding: .25rem .55rem !important;
+            border: 1px solid rgba(255,255,255,.11) !important;
+            border-radius: 16px !important;
+            background: rgba(255,255,255,.06) !important;
             transition: border-color .25s ease, background .25s ease, transform .25s ease;
+            display: flex !important;
+            align-items: center !important;
+        }
+        [data-testid="stFileUploaderDropzone"] > div {
+            min-height: 0 !important;
+            padding: 0 !important;
+            gap: .45rem !important;
+            align-items: center !important;
+        }
+        [data-testid="stFileUploaderDropzone"] svg {
+            width: 1.2rem !important;
+            height: 1.2rem !important;
+            flex: 0 0 auto !important;
         }
         [data-testid="stFileUploaderDropzoneInstructions"] {
             margin: 0 !important;
-            line-height: 1.2 !important;
+            line-height: 1.05 !important;
+        }
+        [data-testid="stFileUploaderDropzoneInstructions"] > div {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        [data-testid="stFileUploaderDropzoneInstructions"] small {
+            display: none !important;
+        }
+        [data-testid="stFileUploaderDropzoneInstructions"] span,
+        [data-testid="stFileUploaderDropzoneInstructions"] p {
+            font-size: .78rem !important;
+            line-height: 1.05 !important;
+            margin: 0 !important;
         }
         [data-testid="stFileUploaderDropzone"]:hover {
-            border-color: rgba(167,139,250,.55) !important;
-            background: rgba(255,255,255,.07) !important;
-            transform: scale(1.003);
+            border-color: rgba(167,139,250,.48) !important;
+            background: rgba(255,255,255,.075) !important;
+            transform: scale(1.002);
         }
         [data-testid="stFileUploaderDropzone"] button {
             border-radius: 999px !important;
             border: 1px solid rgba(255,255,255,.09) !important;
             background: rgba(255,255,255,.09) !important;
             color: #f5f5f7 !important;
-            box-shadow: 0 5px 18px rgba(0,0,0,.18) !important;
-            min-height: 2.1rem !important;
-            padding: .28rem .7rem !important;
-            font-size: .7rem !important;
+            box-shadow: none !important;
+            min-height: 2rem !important;
+            height: 2rem !important;
+            padding: .2rem .62rem !important;
+            font-size: .68rem !important;
+            white-space: nowrap !important;
         }
-        [data-testid="stFileUploaderDropzone"] button p { color: #f5f5f7 !important; }
+        [data-testid="stFileUploaderDropzone"] button p {
+            color: #f5f5f7 !important;
+            font-size: .68rem !important;
+        }
 
         [data-baseweb="select"] > div {
             border-radius: 16px !important;
