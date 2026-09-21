@@ -358,6 +358,9 @@ def inject_apple_style():
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
             background: linear-gradient(180deg, rgba(18,18,22,.98), rgba(12,12,16,.98)) !important;
         }
+        .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div {
+            padding: .95rem .72rem .62rem;
+        }
 
         .section-kicker {
             color: #92929a !important;
@@ -500,35 +503,35 @@ def inject_apple_style():
             color: #f5f5f7 !important;
         }
 
-        .story-shell { padding: .02rem 0 .12rem; }
+        .story-shell { padding: 0; }
         .story-text {
-            font-size: clamp(1.02rem, 1.55vw, 1.18rem);
-            line-height: 1.5;
+            font-size: clamp(.94rem, 1.35vw, 1.06rem);
+            line-height: 1.4;
             letter-spacing: -.018em;
             color: #f5f5f7 !important;
-            margin: .28rem 0 .52rem;
+            margin: .16rem 0 .34rem;
         }
         .word-chip {
             display: inline-flex;
             align-items: center;
-            padding: .35rem .62rem;
+            padding: .26rem .5rem;
             border-radius: 999px;
             background: rgba(255,255,255,.08);
             color: #b7b7bd !important;
-            font-size: .75rem;
+            font-size: .7rem;
             font-weight: 680;
-            margin-bottom: 1rem;
+            margin-bottom: .5rem;
         }
 
         .empty-state {
-            min-height: 230px;
+            min-height: 145px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 2rem;
-            border-radius: 24px;
+            padding: .9rem 1rem;
+            border-radius: 20px;
             background:
                 radial-gradient(circle at 35% 25%, rgba(100,168,255,.08), transparent 32%),
                 radial-gradient(circle at 70% 68%, rgba(210,140,255,.08), transparent 34%),
@@ -537,29 +540,29 @@ def inject_apple_style():
             position: relative;
         }
         .empty-orb {
-            width: 82px;
-            height: 82px;
-            border-radius: 26px;
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
             background: linear-gradient(145deg, #25252d, #17171c);
             box-shadow: 0 18px 45px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.08);
             display: grid;
             place-items: center;
             color: #f5f5f7 !important;
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            font-size: 1.35rem;
+            margin-bottom: .55rem;
             animation: float 4s ease-in-out infinite;
         }
         .empty-state strong {
             color: #f5f5f7 !important;
-            font-size: 1.15rem;
+            font-size: 1rem;
             letter-spacing: -.025em;
         }
         .empty-state p {
             max-width: 360px;
-            margin: .45rem auto 0;
+            margin: .25rem auto 0;
             color: #a1a1a6 !important;
-            font-size: .9rem;
-            line-height: 1.45;
+            font-size: .8rem;
+            line-height: 1.35;
         }
         .preview-empty {
             min-height: 320px;
@@ -597,7 +600,7 @@ def inject_apple_style():
             .hero { margin: .7rem auto 1.8rem; }
             .hero h1 { letter-spacing: -.055em; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
-            .empty-state { min-height: 190px; }
+            .empty-state { min-height: 125px; }
             .preview-empty { min-height: 230px; }
         }
 
