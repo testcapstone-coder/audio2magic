@@ -503,50 +503,73 @@ def inject_apple_style():
             color: #f5f5f7 !important;
         }
 
-        /* The generated-story field intentionally matches the storyteller selector. */
+        /* Story area restored: readable, open, and separate from the voice selector. */
         .story-shell {
-            height: 3rem;
-            min-height: 3rem;
-            box-sizing: border-box;
-            overflow-y: auto;
-            padding: .58rem .9rem;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,.11);
-            background: rgba(255,255,255,.06);
-            scrollbar-width: thin;
+            padding: .85rem .95rem;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(255,255,255,.045);
         }
         .story-text {
-            font-size: .86rem;
-            line-height: 1.25;
+            font-size: .9rem;
+            line-height: 1.42;
             letter-spacing: -.01em;
             color: #f5f5f7 !important;
             margin: 0;
         }
-        .word-chip { display: none; }
-
-        /* Match the empty story field to the storyteller selector height. */
-        .empty-state {
-            min-height: 3rem;
-            height: 3rem;
-            display: flex;
+        .word-chip {
+            display: inline-flex;
             align-items: center;
-            justify-content: flex-start;
-            text-align: left;
-            padding: 0 .9rem;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,.11);
+            margin-top: .55rem;
+            padding: .2rem .5rem;
+            border-radius: 999px;
             background: rgba(255,255,255,.06);
-            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.08);
+            color: #9f9fa7 !important;
+            font-size: .7rem;
+            font-weight: 650;
         }
-        .empty-orb,
-        .empty-state p {
-            display: none;
+
+        .empty-state {
+            min-height: 145px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: .9rem 1rem;
+            border-radius: 20px;
+            background:
+                radial-gradient(circle at 35% 25%, rgba(100,168,255,.08), transparent 32%),
+                radial-gradient(circle at 70% 68%, rgba(210,140,255,.08), transparent 34%),
+                rgba(255,255,255,.025);
+            overflow: hidden;
+            position: relative;
+        }
+        .empty-orb {
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #25252d, #17171c);
+            box-shadow: 0 18px 45px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.08);
+            display: grid;
+            place-items: center;
+            color: #f5f5f7 !important;
+            font-size: 1.35rem;
+            margin-bottom: .55rem;
+            animation: float 4s ease-in-out infinite;
         }
         .empty-state strong {
+            color: #f5f5f7 !important;
+            font-size: 1rem;
+            letter-spacing: -.025em;
+        }
+        .empty-state p {
+            max-width: 360px;
+            margin: .25rem auto 0;
             color: #a1a1a6 !important;
-            font-size: .9rem;
-            font-weight: 500;
-            letter-spacing: -.01em;
+            font-size: .8rem;
+            line-height: 1.35;
         }
         .preview-empty {
             min-height: 320px;
@@ -584,7 +607,7 @@ def inject_apple_style():
             .hero { margin: .7rem auto 1.8rem; }
             .hero h1 { letter-spacing: -.055em; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
-            .empty-state { min-height: 3rem; height: 3rem; }
+            .empty-state { min-height: 125px; }
             .preview-empty { min-height: 230px; }
         }
 
