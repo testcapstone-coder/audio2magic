@@ -649,13 +649,12 @@ def inject_apple_style():
         }
         .preview-empty {
             height: 235px;
-            border-radius: 22px;
-            border: 1px solid rgba(255,255,255,.10);
-            background: rgba(255,255,255,.025);
+            border: 0 !important;
+            background: transparent !important;
             box-sizing: border-box;
         }
 
-        /* Keep a fixed preview rectangle and center the uploaded image inside it. */
+        /* Keep the preview footprint invisible and always show the full uploaded picture. */
         .st-key-preview_panel div[data-testid="stImage"] {
             width: 100% !important;
             height: 235px !important;
@@ -664,20 +663,22 @@ def inject_apple_style():
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            border: 1px solid rgba(255,255,255,.10) !important;
-            border-radius: 22px !important;
-            background: rgba(255,255,255,.025) !important;
+            border: 0 !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
             box-sizing: border-box !important;
             overflow: hidden !important;
         }
         .st-key-preview_panel div[data-testid="stImage"] img {
-            width: auto !important;
-            height: auto !important;
+            width: 100% !important;
+            height: 100% !important;
             max-width: 100% !important;
             max-height: 100% !important;
             object-fit: contain !important;
+            object-position: center center !important;
             border: 0 !important;
-            border-radius: 14px !important;
+            border-radius: 0 !important;
             background: transparent !important;
             box-sizing: border-box;
         }
@@ -729,26 +730,57 @@ def inject_apple_style():
     )
 
 def render_result(result: dict):
-    """Display partial results too, so a narration failure never hides the story."""
-    if result.get("story"):
+    """Display the story first, then narration, description, and downloads."""
+    story = result.get("story")
+    audio = result.get("audio")
+
+    if story:
         st.markdown(
-            f'<div class="story-shell"><div class="story-text">{html.escape(result["story"])}</div>'
-            f'<span class="word-chip">{word_count(result["story"])} words</span></div>',
+            f'<div class="story-shell"><div class="story-text">{html.escape(story)}</div>'
+            f'<span class="word-chip">{word_count(story)} words</span></div>',
             unsafe_allow_html=True,
         )
-        st.download_button(
-            "Download story", result["story"], "my-story.txt", "text/plain", key="download_story"
-        )
-    with st.expander("Detailed image description"):
-        st.write(result["description"])
-    if result.get("audio"):
+
+    if audio:
         st.markdown("### Listen to your story")
         narrator = next(name for name, voice in VOICE_OPTIONS.items() if voice == result["voice"])
         st.caption(f"Narrated by {narrator}")
-        st.audio(result["audio"], format="audio/wav")
-        st.download_button(
-            "Download narration", result["audio"], "my-story.wav", "audio/wav"
-        )
+        st.audio(audio, format="audio/wav")
+
+    # Keep the supporting details and download actions at the end.
+    if result.get("description"):
+        with st.expander("Detailed image description"):
+            st.write(result["description"])
+
+    if story:
+        if audio:
+            story_download_col, audio_download_col = st.columns(2, gap="small")
+            with story_download_col:
+                st.download_button(
+                    "Download story",
+                    story,
+                    "my-story.txt",
+                    "text/plain",
+                    key="download_story",
+                    use_container_width=True,
+                )
+            with audio_download_col:
+                st.download_button(
+                    "Download narration",
+                    audio,
+                    "my-story.wav",
+                    "audio/wav",
+                    key="download_narration",
+                    use_container_width=True,
+                )
+        else:
+            st.download_button(
+                "Download story",
+                story,
+                "my-story.txt",
+                "text/plain",
+                key="download_story",
+            )
 
 
 def main():
