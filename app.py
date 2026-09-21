@@ -470,12 +470,12 @@ def inject_apple_style():
             min-height: 2rem !important;
             height: 2rem !important;
             padding: .2rem .62rem !important;
-            font-size: .68rem !important;
+            font-size: .78rem !important;
             white-space: nowrap !important;
         }
         [data-testid="stFileUploaderDropzone"] button p {
             color: #f5f5f7 !important;
-            font-size: .68rem !important;
+            font-size: .78rem !important;
         }
 
         [data-baseweb="select"] > div {
@@ -541,11 +541,11 @@ def inject_apple_style():
             min-height: 2rem !important;
             height: 2rem !important;
             padding: .24rem .9rem !important;
-            font-size: .68rem !important;
+            font-size: .78rem !important;
             box-shadow: 0 8px 24px rgba(110,92,255,.24) !important;
         }
         .st-key-create_story .stButton > button p {
-            font-size: .68rem !important;
+            font-size: .78rem !important;
         }
 
         div[data-testid="stImage"] { margin-top: .25rem; }
@@ -648,28 +648,37 @@ def inject_apple_style():
             line-height: 1.35;
         }
         .preview-empty {
-            min-height: 235px;
-            display: grid;
-            place-items: center;
-            text-align: center;
+            height: 235px;
             border-radius: 22px;
             border: 1px solid rgba(255,255,255,.10);
             background: rgba(255,255,255,.025);
-            color: #8e8e93 !important;
-            padding: 1.4rem;
+            box-sizing: border-box;
         }
 
-        /* Uploaded images stay inside the same visual footprint as the empty state. */
+        /* Keep a fixed preview rectangle and center the uploaded image inside it. */
         .st-key-preview_panel div[data-testid="stImage"] {
-            margin-top: 0 !important;
-        }
-        .st-key-preview_panel div[data-testid="stImage"] img {
             width: 100% !important;
             height: 235px !important;
-            object-fit: contain !important;
+            margin: 0 !important;
+            padding: .7rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
             border: 1px solid rgba(255,255,255,.10) !important;
             border-radius: 22px !important;
-            background: rgba(255,255,255,.025);
+            background: rgba(255,255,255,.025) !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+        }
+        .st-key-preview_panel div[data-testid="stImage"] img {
+            width: auto !important;
+            height: auto !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: contain !important;
+            border: 0 !important;
+            border-radius: 14px !important;
+            background: transparent !important;
             box-sizing: border-box;
         }
 
@@ -701,9 +710,9 @@ def inject_apple_style():
             .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
                 min-height: 0;
             }
-            .empty-state,
-            .preview-empty { min-height: 190px; }
-            .st-key-preview_panel div[data-testid="stImage"] img { height: 190px !important; }
+            .empty-state { min-height: 190px; }
+            .preview-empty,
+            .st-key-preview_panel div[data-testid="stImage"] { height: 190px !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -829,7 +838,7 @@ def main():
                 st.image(image, width="stretch")
             else:
                 st.markdown(
-                    '<div class="preview-empty">Your uploaded picture will appear here.</div>',
+                    '<div class="preview-empty" aria-label="Image preview area"></div>',
                     unsafe_allow_html=True,
                 )
 
