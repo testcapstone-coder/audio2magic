@@ -379,12 +379,6 @@ def inject_apple_style():
             padding: 0 !important;
         }
 
-        /* Extra breathing room after the Preview / Your Story row. */
-        .st-key-preview_panel,
-        .st-key-story_panel {
-            margin-bottom: 2rem !important;
-        }
-
         .section-kicker {
             color: #92929a !important;
             font-size: .72rem;
@@ -602,7 +596,7 @@ def inject_apple_style():
             font-size: .9rem;
             line-height: 1.42;
             letter-spacing: -.01em;
-            color: #f5f5f7 !important;
+            color: #d8ccff !important;
             margin: 0;
         }
         .word-chip {
@@ -626,6 +620,7 @@ def inject_apple_style():
             justify-content: center;
             text-align: center;
             padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
             border-radius: 22px;
             border: 1px solid rgba(255,255,255,.04) !important;
             background:
@@ -764,8 +759,8 @@ def render_result(result: dict):
         st.caption(f"Narrated by {narrator}")
         st.audio(audio, format="audio/wav")
 
-    # Keep the supporting details and download actions at the end.
-    if result.get("description"):
+    # Show the detailed image description only after a story has been generated.
+    if story and result.get("description"):
         with st.expander("Detailed image description"):
             st.write(result["description"])
 
