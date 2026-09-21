@@ -20,13 +20,13 @@ from kokoro import KModel, KPipeline
 from transformers import AutoModelForCausalLM, AutoProcessor, pipeline
 
 # Model configuration
-CAPTION_MODEL = "microsoft/Florence-2-base"
+CAPTION_MODEL = "microsoft/Florence-2-base"  # Image -> detailed image description
 # Pin the custom modeling/processor code and weights to the reviewed repository revision.
 FLORENCE_REVISION = "5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac"
 FLORENCE_TASK = "<MORE_DETAILED_CAPTION>"
-STORY_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"
-AUDIO_MODEL = "hexgrad/Kokoro-82M"
-SPACY_MODEL = "en_core_web_sm"
+STORY_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"  # Image description -> children's story
+AUDIO_MODEL = "hexgrad/Kokoro-82M"  # Generated story -> spoken narration
+SPACY_MODEL = "en_core_web_sm"  # English text processing used by the narration pipeline
 
 # Application configuration
 MIN_STORY_WORDS = 50
