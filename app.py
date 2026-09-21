@@ -618,10 +618,13 @@ def inject_apple_style():
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: .75rem 1.2rem;
-            border: 0 !important;
-            border-radius: 0 !important;
-            background: transparent !important;
+            padding: 1rem 1.2rem;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,.04) !important;
+            background:
+                radial-gradient(circle at 35% 25%, rgba(100,168,255,.07), transparent 34%),
+                radial-gradient(circle at 70% 68%, rgba(210,140,255,.07), transparent 36%),
+                rgba(255,255,255,.025) !important;
             box-shadow: none !important;
             overflow: hidden;
             position: relative;
@@ -654,7 +657,7 @@ def inject_apple_style():
         .preview-empty,
         .preview-image-box {
             width: 100%;
-            height: 270px;
+            height: 320px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -711,7 +714,7 @@ def inject_apple_style():
             }
             .empty-state { min-height: 205px; }
             .preview-empty,
-            .preview-image-box { height: 215px !important; }
+            .preview-image-box { height: 245px !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
