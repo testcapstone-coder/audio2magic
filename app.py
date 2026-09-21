@@ -3,6 +3,7 @@ import gc
 import ctypes
 import sys
 import hashlib
+import html
 import io
 import logging
 import re
@@ -236,52 +237,431 @@ def generate_audio(story: str, voice: str = "af_bella") -> bytes:
     return buffer.getvalue()
 
 
+def inject_apple_style():
+    """Apply a lightweight Apple-inspired visual system without extra dependencies."""
+    st.markdown(
+        """
+        <style>
+        :root {
+            --ink: #1d1d1f;
+            --muted: #6e6e73;
+            --soft: #f5f5f7;
+            --line: rgba(29, 29, 31, 0.09);
+            --glass: rgba(255, 255, 255, 0.72);
+        }
+
+        html, body, [class*="css"] {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                         "Helvetica Neue", Arial, sans-serif;
+            color: var(--ink);
+        }
+
+        .stApp {
+            background:
+                radial-gradient(circle at 15% -10%, rgba(94, 92, 230, .13), transparent 34rem),
+                radial-gradient(circle at 88% 2%, rgba(0, 122, 255, .12), transparent 30rem),
+                linear-gradient(180deg, #ffffff 0%, #fbfbfd 38%, #f5f5f7 100%);
+            background-attachment: fixed;
+        }
+
+        [data-testid="stHeader"] {
+            background: rgba(255,255,255,.55);
+            backdrop-filter: blur(18px) saturate(160%);
+            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            border-bottom: 1px solid rgba(0,0,0,.04);
+        }
+
+        [data-testid="stToolbar"] { opacity: .72; }
+
+        .block-container {
+            max-width: 1240px;
+            padding-top: 1.25rem;
+            padding-bottom: 5rem;
+        }
+
+        .apple-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: .35rem .15rem 1.1rem;
+            color: var(--ink);
+            animation: fadeIn .55s ease both;
+        }
+        .apple-brand {
+            font-size: .98rem;
+            font-weight: 700;
+            letter-spacing: -.02em;
+        }
+        .apple-nav-note {
+            color: var(--muted);
+            font-size: .78rem;
+            font-weight: 500;
+        }
+
+        .hero {
+            text-align: center;
+            max-width: 920px;
+            margin: 3.4rem auto 3.2rem;
+            animation: rise .72s cubic-bezier(.2,.75,.2,1) both;
+        }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .42rem .72rem;
+            border-radius: 999px;
+            border: 1px solid rgba(29,29,31,.08);
+            background: rgba(255,255,255,.7);
+            box-shadow: 0 8px 30px rgba(0,0,0,.035);
+            color: #515154;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .hero h1 {
+            margin: 1.1rem 0 .9rem;
+            font-size: clamp(3.25rem, 7.4vw, 6.4rem);
+            line-height: .94;
+            letter-spacing: -.072em;
+            font-weight: 720;
+            color: #1d1d1f;
+        }
+        .hero-gradient {
+            background: linear-gradient(90deg, #0071e3 0%, #5e5ce6 50%, #af52de 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero p {
+            max-width: 660px;
+            margin: 0 auto;
+            color: var(--muted);
+            font-size: clamp(1.06rem, 2vw, 1.35rem);
+            line-height: 1.45;
+            letter-spacing: -.025em;
+        }
+        .flow-pills {
+            margin-top: 1.55rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: .48rem;
+        }
+        .flow-pills span {
+            padding: .46rem .72rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,.72);
+            border: 1px solid rgba(29,29,31,.07);
+            color: #515154;
+            font-size: .78rem;
+            font-weight: 600;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        div[data-testid="stVerticalBlockBorderWrapper"] {
+            border: 1px solid var(--line) !important;
+            border-radius: 30px !important;
+            background: rgba(255,255,255,.74) !important;
+            backdrop-filter: blur(22px) saturate(150%);
+            -webkit-backdrop-filter: blur(22px) saturate(150%);
+            box-shadow: 0 20px 60px rgba(0,0,0,.055);
+            transition: transform .32s cubic-bezier(.2,.8,.2,1), box-shadow .32s ease, border-color .32s ease;
+            overflow: hidden;
+            animation: rise .72s .06s cubic-bezier(.2,.75,.2,1) both;
+        }
+        div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+            transform: translateY(-3px);
+            border-color: rgba(29,29,31,.14) !important;
+            box-shadow: 0 28px 75px rgba(0,0,0,.075);
+        }
+        div[data-testid="stVerticalBlockBorderWrapper"] > div {
+            padding: 1.25rem .7rem .7rem;
+        }
+
+        .section-kicker {
+            color: #86868b;
+            font-size: .72rem;
+            font-weight: 750;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: .15rem;
+        }
+        .section-title {
+            color: var(--ink);
+            font-size: clamp(1.85rem, 3vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -.045em;
+            line-height: 1.05;
+            margin-bottom: .45rem;
+        }
+        .section-copy {
+            color: var(--muted);
+            font-size: .96rem;
+            line-height: 1.45;
+            margin-bottom: 1.15rem;
+        }
+
+        [data-testid="stFileUploaderDropzone"] {
+            min-height: 150px;
+            border: 1.5px dashed rgba(29,29,31,.16) !important;
+            border-radius: 22px !important;
+            background: rgba(245,245,247,.65) !important;
+            transition: border-color .25s ease, background .25s ease, transform .25s ease;
+        }
+        [data-testid="stFileUploaderDropzone"]:hover {
+            border-color: rgba(0,113,227,.5) !important;
+            background: rgba(0,113,227,.035) !important;
+            transform: scale(1.004);
+        }
+        [data-testid="stFileUploaderDropzone"] button {
+            border-radius: 999px !important;
+            border: 0 !important;
+            background: white !important;
+            box-shadow: 0 5px 18px rgba(0,0,0,.08) !important;
+        }
+
+        div[data-testid="stImage"] img {
+            border-radius: 22px !important;
+            box-shadow: 0 12px 38px rgba(0,0,0,.09);
+            animation: fadeIn .45s ease both;
+        }
+
+        .stButton > button,
+        .stDownloadButton > button {
+            width: 100%;
+            min-height: 3.15rem;
+            border: 0 !important;
+            border-radius: 999px !important;
+            font-weight: 700 !important;
+            letter-spacing: -.01em;
+            transition: transform .2s ease, box-shadow .2s ease, filter .2s ease !important;
+        }
+        .stButton > button[kind="primary"] {
+            color: white !important;
+            background: linear-gradient(135deg, #1d1d1f 0%, #3a3a3c 100%) !important;
+            box-shadow: 0 10px 28px rgba(0,0,0,.16) !important;
+        }
+        .stButton > button:hover,
+        .stDownloadButton > button:hover {
+            transform: translateY(-2px) scale(1.006);
+            filter: brightness(1.02);
+            box-shadow: 0 14px 34px rgba(0,0,0,.17) !important;
+        }
+        .stButton > button:active,
+        .stDownloadButton > button:active { transform: scale(.99); }
+
+        [data-baseweb="select"] > div {
+            border-radius: 16px !important;
+            border-color: rgba(29,29,31,.09) !important;
+            background: rgba(245,245,247,.78) !important;
+            min-height: 3rem;
+        }
+        [data-baseweb="select"] > div:focus-within {
+            border-color: rgba(0,113,227,.45) !important;
+            box-shadow: 0 0 0 3px rgba(0,113,227,.08) !important;
+        }
+
+        [data-testid="stProgress"] > div > div > div > div {
+            background: linear-gradient(90deg, #0071e3, #5e5ce6, #af52de) !important;
+        }
+        [data-testid="stProgress"] > div > div > div {
+            border-radius: 999px !important;
+            overflow: hidden;
+        }
+
+        [data-testid="stAudio"] {
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        details {
+            border: 1px solid rgba(29,29,31,.08) !important;
+            border-radius: 18px !important;
+            background: rgba(245,245,247,.56) !important;
+        }
+
+        [data-testid="stAlert"] {
+            border-radius: 18px !important;
+            border: 1px solid rgba(29,29,31,.06) !important;
+        }
+
+        .story-shell {
+            padding: .15rem 0 .3rem;
+        }
+        .story-text {
+            font-size: clamp(1.22rem, 2vw, 1.5rem);
+            line-height: 1.62;
+            letter-spacing: -.025em;
+            color: #1d1d1f;
+            margin: .45rem 0 .75rem;
+        }
+        .word-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: .35rem .62rem;
+            border-radius: 999px;
+            background: #f5f5f7;
+            color: #6e6e73;
+            font-size: .75rem;
+            font-weight: 650;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state {
+            min-height: 330px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            border-radius: 24px;
+            background:
+                radial-gradient(circle at 35% 25%, rgba(0,113,227,.10), transparent 32%),
+                radial-gradient(circle at 70% 68%, rgba(175,82,222,.10), transparent 34%),
+                #f7f7f9;
+            overflow: hidden;
+            position: relative;
+        }
+        .empty-orb {
+            width: 82px;
+            height: 82px;
+            border-radius: 26px;
+            background: linear-gradient(145deg, #ffffff, #ececf1);
+            box-shadow: 0 18px 45px rgba(0,0,0,.09), inset 0 1px 0 rgba(255,255,255,.9);
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: float 4s ease-in-out infinite;
+        }
+        .empty-state strong {
+            font-size: 1.15rem;
+            letter-spacing: -.025em;
+        }
+        .empty-state p {
+            max-width: 360px;
+            margin: .45rem auto 0;
+            color: var(--muted);
+            font-size: .9rem;
+            line-height: 1.45;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #86868b;
+            font-size: .78rem;
+            padding-top: 2.6rem;
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+        }
+
+        @media (max-width: 800px) {
+            .block-container { padding-left: 1rem; padding-right: 1rem; }
+            .hero { margin: 2.2rem auto 2rem; }
+            .hero h1 { letter-spacing: -.055em; }
+            .apple-nav-note { display: none; }
+            div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
+            .empty-state { min-height: 230px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render_result(result: dict):
     """Display partial results too, so a narration failure never hides the story."""
     if result.get("story"):
-        st.write(result["story"])
-        st.caption(f"{word_count(result['story'])} words")
-        st.download_button("⬇ Download story", result["story"], "my-story.txt", "text/plain", key="download_story")
+        st.markdown(
+            f'<div class="story-shell"><div class="story-text">{html.escape(result["story"])}</div>'
+            f'<span class="word-chip">{word_count(result["story"])} words</span></div>',
+            unsafe_allow_html=True,
+        )
+        st.download_button(
+            "Download story", result["story"], "my-story.txt", "text/plain", key="download_story"
+        )
     with st.expander("Detailed image description"):
         st.write(result["description"])
     if result.get("audio"):
-        st.subheader("🔊 Listen to your story")
+        st.markdown("### Listen to your story")
         narrator = next(name for name, voice in VOICE_OPTIONS.items() if voice == result["voice"])
         st.caption(f"Narrated by {narrator}")
         st.audio(result["audio"], format="audio/wav")
-        st.download_button("⬇ Download narration", result["audio"], "my-story.wav", "audio/wav")
+        st.download_button(
+            "Download narration", result["audio"], "my-story.wav", "audio/wav"
+        )
 
 
 def main():
-    st.set_page_config(page_title="Magic Story Maker", page_icon="📚", layout="wide")
-    st.title("📚 Magic Story Maker")
-    st.write("Turn your picture into a little adventure you can read and listen to!")
+    st.set_page_config(
+        page_title="Magic Story Maker",
+        page_icon="✦",
+        layout="wide",
+        initial_sidebar_state="collapsed",
+    )
+    inject_apple_style()
+
     st.markdown(
-        """<style>
-        .st-key-creation_controls, .st-key-picture_panel, .st-key-story_panel {
-            padding: 1rem;
-            border: 1px solid transparent;
-            border-radius: 1rem;
-        }
-        .st-key-creation_controls {
-            background-color: rgba(139, 92, 246, 0.12);
-            border-color: rgba(139, 92, 246, 0.28);
-        }
-        .st-key-story_panel {
-            background-color: rgba(20, 184, 166, 0.12);
-            border-color: rgba(20, 184, 166, 0.30);
-        }
-        </style>""",
+        """
+        <div class="apple-nav">
+            <div class="apple-brand">Magic Story Maker</div>
+            <div class="apple-nav-note">Image intelligence · Story generation · Natural narration</div>
+        </div>
+        <section class="hero">
+            <div class="eyebrow">Made for little imaginations</div>
+            <h1>One picture.<br><span class="hero-gradient">A whole new story.</span></h1>
+            <p>Upload an image and watch it become a warm, playful adventure you can read and hear.</p>
+            <div class="flow-pills">
+                <span>1 · Upload</span>
+                <span>2 · Imagine</span>
+                <span>3 · Listen</span>
+            </div>
+        </section>
+        """,
         unsafe_allow_html=True,
     )
-    # Shared rows keep the two sides aligned, regardless of uploader height.
-    with st.container(key="creation_controls"):
-        upload_column, voice_column = st.columns([1, 1.3], gap="large")
-        image = None
-        with upload_column:
-            st.subheader("🖼 Upload Your Picture")
+
+    left, right = st.columns([0.95, 1.05], gap="large")
+    image = None
+
+    with left:
+        with st.container(border=True):
+            st.markdown(
+                """
+                <div class="section-kicker">01 · Your image</div>
+                <div class="section-title">Start with a picture.</div>
+                <div class="section-copy">Choose a JPG or PNG. Clear, colorful images work best.</div>
+                """,
+                unsafe_allow_html=True,
+            )
             uploaded = st.file_uploader(
-                "Upload your picture", type=["jpg", "jpeg", "png"], label_visibility="collapsed",
+                "Upload a picture", type=["jpg", "jpeg", "png"], label_visibility="collapsed"
             )
             image_id = hashlib.sha256(uploaded.getvalue()).hexdigest() if uploaded else None
             if st.session_state.get("image_id") != image_id:
@@ -293,57 +673,74 @@ def main():
                         image = ImageOps.exif_transpose(original).convert("RGB")
                 except (OSError, ValueError, Image.DecompressionBombError):
                     st.error("This picture could not be opened. Please upload another JPG or PNG.")
-            create_clicked = st.button("✨ Create My Story", type="primary", disabled=image is None)
-
-        with voice_column:
-            st.subheader("🎙 Choose Your Storyteller")
-            selected_name = st.selectbox(
-                "Choose your storyteller", list(VOICE_OPTIONS), label_visibility="collapsed",
+            if image is not None:
+                st.image(image, width="stretch")
+            create_clicked = st.button(
+                "Create My Story", type="primary", disabled=image is None, use_container_width=True
             )
+
+    with right:
+        with st.container(border=True):
+            st.markdown(
+                """
+                <div class="section-kicker">02 · Your story</div>
+                <div class="section-title">Now, let it come alive.</div>
+                <div class="section-copy">Choose a voice, then your picture becomes a short story with narration.</div>
+                """,
+                unsafe_allow_html=True,
+            )
+            selected_name = st.selectbox("Choose your storyteller", list(VOICE_OPTIONS))
             selected_voice = VOICE_OPTIONS[selected_name]
 
-    picture_column, story_column = st.columns([1, 1.3], gap="large")
-    with picture_column, st.container(key="picture_panel"):
-        if image is not None:
-            st.image(image, width="stretch")
-        else:
-            st.info("Your picture will appear here.")
+            if create_clicked and image is not None:
+                st.session_state.pop("result", None)
+                progress = st.progress(0, text="Looking closely at your picture…")
+                preview = st.empty()
+                try:
+                    with st.spinner("Creating your story… First-time model downloads may take a few minutes."):
+                        with inference_lock():
+                            description = run_stage(generate_image_description, image)
+                            result = {"description": description, "voice": selected_voice}
+                            st.session_state["result"] = result
+                            progress.progress(33, text="Turning details into a story…")
+                            story = run_stage(generate_story, description)
+                            result["story"] = story
+                            preview.markdown(
+                                f'<div class="story-text">{html.escape(story)}</div>', unsafe_allow_html=True
+                            )
+                            progress.progress(66, text="Giving the story a voice…")
+                            result["audio"] = run_stage(generate_audio, story, selected_voice)
+                            progress.progress(100, text="Your story is ready.")
+                except Exception as exc:
+                    LOGGER.exception("Story creation failed")
+                    progress.empty()
+                    st.error("We couldn't finish all the steps. Any completed text is saved below.")
+                    with st.expander("Technical details"):
+                        st.text(str(exc))
+                finally:
+                    preview.empty()
 
-    with story_column, st.container(key="story_panel"):
-        st.subheader("✨ Your Story")
-        if create_clicked and image is not None:
-            st.session_state.pop("result", None)
-            progress = st.progress(0, text="1. Analyzing image")
-            # Show completed text while narration is being generated, without duplicate widgets.
-            preview = st.empty()
-            try:
-                with st.spinner("Creating your story… First-time model downloads may take a few minutes."):
-                    with inference_lock():
-                        description = run_stage(generate_image_description, image)
-                        result = {"description": description, "voice": selected_voice}
-                        st.session_state["result"] = result
-                        progress.progress(33, text="2. Writing story")
-                        story = run_stage(generate_story, description)
-                        result["story"] = story
-                        preview.write(story)
-                        progress.progress(66, text="3. Creating narration")
-                        result["audio"] = run_stage(generate_audio, story, selected_voice)
-                        progress.progress(100, text="4. Complete")
-            except Exception as exc:
-                LOGGER.exception("Story creation failed")
-                progress.empty()
-                st.error("We couldn't finish all the steps. Any completed text is saved below.")
-                with st.expander("Technical details"):
-                    st.text(str(exc))
-            finally:
-                preview.empty()
-        result = st.session_state.get("result")
-        if result:
-            render_result(result)
-            if selected_voice != result["voice"]:
-                st.info("Click Create My Story to make a new story with your chosen storyteller.")
-        else:
-            st.info("Choose a picture and a storyteller, then click Create My Story.")
+            result = st.session_state.get("result")
+            if result:
+                render_result(result)
+                if selected_voice != result["voice"]:
+                    st.info("Click Create My Story to make a new story with your chosen storyteller.")
+            elif not create_clicked:
+                st.markdown(
+                    """
+                    <div class="empty-state">
+                        <div class="empty-orb">✦</div>
+                        <strong>Your story will appear here.</strong>
+                        <p>Upload a picture, pick a storyteller, and the app will create the rest.</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+    st.markdown(
+        '<div class="footer-note">Built with Hugging Face models · Designed for ages 3–10</div>',
+        unsafe_allow_html=True,
+    )
 
 
 if __name__ == "__main__":
