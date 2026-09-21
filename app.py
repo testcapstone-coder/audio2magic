@@ -523,46 +523,29 @@ def inject_apple_style():
             margin-bottom: .5rem;
         }
 
+        /* Match the empty story field to the storyteller selector height. */
         .empty-state {
-            min-height: 145px;
+            min-height: 3rem;
+            height: 3rem;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: .9rem 1rem;
-            border-radius: 20px;
-            background:
-                radial-gradient(circle at 35% 25%, rgba(100,168,255,.08), transparent 32%),
-                radial-gradient(circle at 70% 68%, rgba(210,140,255,.08), transparent 34%),
-                rgba(255,255,255,.025);
+            justify-content: flex-start;
+            text-align: left;
+            padding: 0 .9rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.11);
+            background: rgba(255,255,255,.06);
             overflow: hidden;
-            position: relative;
         }
-        .empty-orb {
-            width: 54px;
-            height: 54px;
-            border-radius: 18px;
-            background: linear-gradient(145deg, #25252d, #17171c);
-            box-shadow: 0 18px 45px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.08);
-            display: grid;
-            place-items: center;
-            color: #f5f5f7 !important;
-            font-size: 1.35rem;
-            margin-bottom: .55rem;
-            animation: float 4s ease-in-out infinite;
+        .empty-orb,
+        .empty-state p {
+            display: none;
         }
         .empty-state strong {
-            color: #f5f5f7 !important;
-            font-size: 1rem;
-            letter-spacing: -.025em;
-        }
-        .empty-state p {
-            max-width: 360px;
-            margin: .25rem auto 0;
             color: #a1a1a6 !important;
-            font-size: .8rem;
-            line-height: 1.35;
+            font-size: .9rem;
+            font-weight: 500;
+            letter-spacing: -.01em;
         }
         .preview-empty {
             min-height: 320px;
@@ -600,7 +583,7 @@ def inject_apple_style():
             .hero { margin: .7rem auto 1.8rem; }
             .hero h1 { letter-spacing: -.055em; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
-            .empty-state { min-height: 125px; }
+            .empty-state { min-height: 3rem; height: 3rem; }
             .preview-empty { min-height: 230px; }
         }
 
