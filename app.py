@@ -503,25 +503,26 @@ def inject_apple_style():
             color: #f5f5f7 !important;
         }
 
-        .story-shell { padding: 0; }
+        /* The generated-story field intentionally matches the storyteller selector. */
+        .story-shell {
+            height: 3rem;
+            min-height: 3rem;
+            box-sizing: border-box;
+            overflow-y: auto;
+            padding: .58rem .9rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.11);
+            background: rgba(255,255,255,.06);
+            scrollbar-width: thin;
+        }
         .story-text {
-            font-size: clamp(.94rem, 1.35vw, 1.06rem);
-            line-height: 1.4;
-            letter-spacing: -.018em;
+            font-size: .86rem;
+            line-height: 1.25;
+            letter-spacing: -.01em;
             color: #f5f5f7 !important;
-            margin: .16rem 0 .34rem;
+            margin: 0;
         }
-        .word-chip {
-            display: inline-flex;
-            align-items: center;
-            padding: .26rem .5rem;
-            border-radius: 999px;
-            background: rgba(255,255,255,.08);
-            color: #b7b7bd !important;
-            font-size: .7rem;
-            font-weight: 680;
-            margin-bottom: .5rem;
-        }
+        .word-chip { display: none; }
 
         /* Match the empty story field to the storyteller selector height. */
         .empty-state {
