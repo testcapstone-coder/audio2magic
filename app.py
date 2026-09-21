@@ -19,13 +19,25 @@ from PIL import Image, ImageOps
 from kokoro import KModel, KPipeline
 from transformers import AutoModelForCausalLM, AutoProcessor, pipeline
 
+# Model configuration
 FLORENCE_MODEL = "microsoft/Florence-2-base"
 # Pin the custom modeling/processor code and weights to the reviewed repository revision.
 FLORENCE_REVISION = "5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac"
 FLORENCE_TASK = "<MORE_DETAILED_CAPTION>"
 STORY_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"
 TTS_MODEL = "hexgrad/Kokoro-82M"
+SPACY_MODEL = "en_core_web_sm"
+
+# Application configuration
+MIN_STORY_WORDS = 50
+MAX_STORY_WORDS = 100
+TARGET_STORY_WORDS = 65
+MAX_STORY_ATTEMPTS = 3
 NARRATION_SPEED = 0.95
+AUDIO_SAMPLE_RATE = 24000
+DEFAULT_VOICE = "am_michael"
+ALLOWED_IMAGE_TYPES = ["jpg", "jpeg", "png"]
+
 VOICE_OPTIONS = {
     "🧚 Bella — Warm American": "af_bella",
     "💖 Heart — Friendly American": "af_heart",
@@ -35,7 +47,7 @@ VOICE_OPTIONS = {
 LOGGER = logging.getLogger(__name__)
 SYSTEM_PROMPT = (
     "Write a warm, playful story for children aged 3–10 in simple English. "
-    "Use five short sentences, about 12–16 words each, totaling 50–100 words. "
+    f"Use five short sentences, about 12–16 words each, totaling {MIN_STORY_WORDS}–{MAX_STORY_WORDS} words. "
     "Give it a beginning, a small gentle adventure, and a happy ending. "
     "Use the image's main subject as the narrator; preserve its setting, objects, colors, and scale. "
     "Objects and animals may talk. Do not add people absent from the image description. "
@@ -125,8 +137,9 @@ def clean_story(text: str) -> str:
 
 def story_issue(story: str) -> str:
     count = word_count(story)
-    if not 50 <= count <= 100:
-        return f"The draft has {count} words. Rewrite it as five short sentences, 50–100 words total. Aim for 65 words."
+    if not MIN_STORY_WORDS <= count <= MAX_STORY_WORDS:
+        return (f"The draft has {count} words. Rewrite it as five short sentences, "
+                f"{MIN_STORY_WORDS}–{MAX_STORY_WORDS} words total. Aim for {TARGET_STORY_WORDS} words.")
     if not story.endswith((".", "!", "?", '"', "”", "’")):
         return "Finish the final sentence and give the story a happy ending."
     if re.search(r"\b(as an ai|language model|system prompt)\b", story, re.I):
@@ -136,7 +149,7 @@ def story_issue(story: str) -> str:
 
 def compact_story(story: str) -> str:
     """Shorten a complete long draft using whole sentences, retaining its ending."""
-    if word_count(story) <= 100 or not story.endswith((".", "!", "?", '\"', "”", "’")):
+    if word_count(story) <= MAX_STORY_WORDS or not story.endswith((".", "!", "?", '\"', "”", "’")):
         return story
     sentences = re.findall(r'.+?[.!?]["”’]?(?=\s|$)', story)
     # Do not shorten if sentence parsing would silently discard any source text.
@@ -145,13 +158,14 @@ def compact_story(story: str) -> str:
     candidates = []
     for prefix_size in range(1, len(sentences) - 1):
         candidate = " ".join(part.strip() for part in sentences[:prefix_size] + sentences[-1:])
-        if 50 <= word_count(candidate) <= 100:
+        if MIN_STORY_WORDS <= word_count(candidate) <= MAX_STORY_WORDS:
             candidates.append(candidate)
-    return min(candidates, key=lambda text: abs(word_count(text) - 75)) if candidates else story
+    midpoint = (MIN_STORY_WORDS + MAX_STORY_WORDS) // 2
+    return min(candidates, key=lambda text: abs(word_count(text) - midpoint)) if candidates else story
 
 
 def generate_story(description: str) -> str:
-    """Revise up to three drafts; never return an out-of-range story or filler."""
+    """Revise generated drafts until one meets the configured story rules."""
     generator = load_story_model()
     user_prompt = (
         "Turn this factual image description into a short children's story. "
@@ -163,7 +177,7 @@ def generate_story(description: str) -> str:
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content":
             "Image description: A yellow duck stands beside a pond with green reeds. "
-            "Tell a 50–100 word story from the duck's point of view."},
+            f"Tell a {MIN_STORY_WORDS}–{MAX_STORY_WORDS} word story from the duck's point of view."},
         {"role": "assistant", "content":
             "I was a little yellow duck beside a pond full of green reeds. "
             "One sunny morning, I wanted to make the prettiest ripple on the water. "
@@ -173,7 +187,7 @@ def generate_story(description: str) -> str:
         {"role": "user", "content": user_prompt},
     ]
     messages = base_messages
-    for attempt in range(3):
+    for attempt in range(MAX_STORY_ATTEMPTS):
         # Format explicitly so return_full_text=False yields only the generated story.
         prompt = generator.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True,
@@ -197,8 +211,9 @@ def generate_story(description: str) -> str:
             {"role": "user", "content": issue + " Keep the image details and return only the revised story."},
         ]
     raise RuntimeError(
-        "The model could not finish a 50–100 word story after three attempts. "
-        "Your image description is saved below. Click Create My Story to try again."
+        f"The model could not finish a {MIN_STORY_WORDS}–{MAX_STORY_WORDS} word story "
+        f"after {MAX_STORY_ATTEMPTS} attempts. Your image description is saved below. "
+        "Click Create My Story to try again."
     )
 
 
@@ -208,9 +223,9 @@ def load_kokoro_model():
 
 
 def load_tts_model(lang_code: str):
-    if not spacy.util.is_package("en_core_web_sm"):
+    if not spacy.util.is_package(SPACY_MODEL):
         raise RuntimeError(
-            "Missing en_core_web_sm. Deploy the supplied requirements.txt so it is "
+            f"Missing {SPACY_MODEL}. Deploy the supplied requirements.txt so it is "
             "installed at build time; runtime package installation is not supported."
         )
     return KPipeline(
@@ -218,10 +233,12 @@ def load_tts_model(lang_code: str):
     )
 
 
-def generate_audio(story: str, voice: str = "af_bella") -> bytes:
-    """Generate 24 kHz WAV audio at fixed speed 0.95."""
-    if not 50 <= word_count(story) <= 100:
-        raise ValueError("Narration requires a validated 50–100 word story.")
+def generate_audio(story: str, voice: str = DEFAULT_VOICE) -> bytes:
+    """Generate WAV narration using the configured voice speed and sample rate."""
+    if not MIN_STORY_WORDS <= word_count(story) <= MAX_STORY_WORDS:
+        raise ValueError(
+            f"Narration requires a validated {MIN_STORY_WORDS}–{MAX_STORY_WORDS} word story."
+        )
     tts = load_tts_model("b" if voice.startswith("b") else "a")
     chunks = []
     with torch.inference_mode():
@@ -235,7 +252,7 @@ def generate_audio(story: str, voice: str = "af_bella") -> bytes:
     if not chunks:
         raise RuntimeError("The narrator returned no audio. Your story is still available.")
     buffer = io.BytesIO()
-    sf.write(buffer, np.concatenate(chunks), 24000, format="WAV")
+    sf.write(buffer, np.concatenate(chunks), AUDIO_SAMPLE_RATE, format="WAV")
     return buffer.getvalue()
 
 
@@ -854,7 +871,7 @@ def main():
                 unsafe_allow_html=True,
             )
             uploaded = st.file_uploader(
-                "Upload a picture", type=["jpg", "jpeg", "png"], label_visibility="collapsed"
+                "Upload a picture", type=ALLOWED_IMAGE_TYPES, label_visibility="collapsed"
             )
 
         with voice_col:
