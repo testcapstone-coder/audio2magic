@@ -290,7 +290,7 @@ def inject_apple_style():
         }
         .hero h1 {
             margin: 0 0 .9rem;
-            font-size: clamp(2.205rem, 5.04vw, 4.34rem);
+            font-size: clamp(2.2rem, 5.05vw, 4.35rem);
             line-height: .95;
             letter-spacing: -.07em;
             font-weight: 720;
@@ -306,7 +306,7 @@ def inject_apple_style():
             max-width: 690px;
             margin: 0 auto;
             color: var(--muted) !important;
-            font-size: clamp(.735rem, 1.4vw, .91rem);
+            font-size: clamp(1.05rem, 2vw, 1.3rem);
             line-height: 1.45;
             letter-spacing: -.025em;
         }
@@ -323,7 +323,7 @@ def inject_apple_style():
             background: rgba(255,255,255,.055);
             border: 1px solid rgba(255,255,255,.08);
             color: #c7c7cc !important;
-            font-size: .546rem;
+            font-size: .78rem;
             font-weight: 650;
             box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
         }
@@ -367,7 +367,7 @@ def inject_apple_style():
 
         .section-kicker {
             color: #92929a !important;
-            font-size: .504rem;
+            font-size: .72rem;
             font-weight: 760;
             letter-spacing: .1em;
             text-transform: uppercase;
@@ -375,7 +375,7 @@ def inject_apple_style():
         }
         .section-title {
             color: #f5f5f7 !important;
-            font-size: clamp(1.204rem, 2.03vw, 1.645rem);
+            font-size: clamp(1.2rem, 2.03vw, 1.65rem);
             font-weight: 710;
             letter-spacing: -.045em;
             line-height: 1.06;
@@ -383,7 +383,7 @@ def inject_apple_style():
         }
         .section-copy {
             color: #aaaab1 !important;
-            font-size: .665rem;
+            font-size: .95rem;
             line-height: 1.46;
             margin-bottom: 1rem;
         }
@@ -432,24 +432,11 @@ def inject_apple_style():
             background: rgba(255,255,255,.09) !important;
             color: #f5f5f7 !important;
             box-shadow: 0 5px 18px rgba(0,0,0,.18) !important;
+            min-height: 2.1rem !important;
+            padding: .28rem .7rem !important;
+            font-size: .7rem !important;
         }
         [data-testid="stFileUploaderDropzone"] button p { color: #f5f5f7 !important; }
-
-
-        /* Streamlit-native text: ~30% smaller, control dimensions unchanged. */
-        .stButton > button,
-        .stDownloadButton > button {
-            font-size: .7rem !important;
-        }
-        [data-baseweb="select"] span,
-        [data-testid="stFileUploaderDropzoneInstructions"],
-        [data-testid="stFileUploaderDropzoneInstructions"] small,
-        [data-testid="stCaptionContainer"],
-        [data-testid="stExpander"] summary,
-        [data-testid="stAlert"],
-        [data-testid="stProgress"] {
-            font-size: .7rem !important;
-        }
 
         [data-baseweb="select"] > div {
             border-radius: 16px !important;
@@ -470,9 +457,11 @@ def inject_apple_style():
         .stButton > button,
         .stDownloadButton > button {
             width: 100%;
-            min-height: 3.15rem;
+            min-height: 2.2rem;
+            padding: .35rem .8rem !important;
             border: 0 !important;
             border-radius: 999px !important;
+            font-size: .7rem !important;
             font-weight: 700 !important;
             letter-spacing: -.01em;
             transition: transform .2s ease, box-shadow .2s ease, filter .2s ease !important;
@@ -482,7 +471,7 @@ def inject_apple_style():
             background: linear-gradient(135deg, #6e5cff 0%, #9b6cff 100%) !important;
             box-shadow: 0 10px 30px rgba(110,92,255,.27) !important;
         }
-        .stButton > button[kind="primary"] p { color: #ffffff !important; }
+        .stButton > button[kind="primary"] p { color: #ffffff !important; font-size: .7rem !important; }
         .stButton > button:hover,
         .stDownloadButton > button:hover {
             transform: translateY(-2px) scale(1.005);
@@ -491,6 +480,10 @@ def inject_apple_style():
         }
         .stButton > button:active,
         .stDownloadButton > button:active { transform: scale(.99); }
+        .stButton > button p,
+        .stDownloadButton > button p {
+            font-size: .7rem !important;
+        }
 
         div[data-testid="stImage"] { margin-top: .25rem; }
         div[data-testid="stImage"] img {
@@ -530,7 +523,7 @@ def inject_apple_style():
             background: rgba(255,255,255,.045);
         }
         .story-text {
-            font-size: .63rem;
+            font-size: .9rem;
             line-height: 1.42;
             letter-spacing: -.01em;
             color: #f5f5f7 !important;
@@ -545,7 +538,7 @@ def inject_apple_style():
             background: rgba(255,255,255,.06);
             border: 1px solid rgba(255,255,255,.08);
             color: #9f9fa7 !important;
-            font-size: .49rem;
+            font-size: .7rem;
             font-weight: 650;
         }
 
@@ -575,20 +568,20 @@ def inject_apple_style():
             display: grid;
             place-items: center;
             color: #f5f5f7 !important;
-            font-size: .945rem;
+            font-size: 1.35rem;
             margin-bottom: .55rem;
             animation: float 4s ease-in-out infinite;
         }
         .empty-state strong {
             color: #f5f5f7 !important;
-            font-size: .7rem;
+            font-size: 1rem;
             letter-spacing: -.025em;
         }
         .empty-state p {
             max-width: 360px;
             margin: .25rem auto 0;
             color: #a1a1a6 !important;
-            font-size: .56rem;
+            font-size: .8rem;
             line-height: 1.35;
         }
         .preview-empty {
@@ -614,7 +607,7 @@ def inject_apple_style():
         .footer-note {
             text-align: center;
             color: #7f7f86 !important;
-            font-size: .546rem;
+            font-size: .78rem;
             padding-top: 2.4rem;
         }
 
