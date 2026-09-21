@@ -670,6 +670,13 @@ def inject_apple_style():
             color: #d8ccff !important;
             margin: 0;
         }
+        .st-key-story_panel [data-testid="stSpinner"] {
+            margin-top: 1.15rem !important;
+        }
+        .st-key-story_panel [data-testid="stSpinner"] p {
+            font-size: .84rem !important;
+            color: #d8d8de !important;
+        }
         .word-chip {
             display: inline-flex;
             align-items: center;
@@ -982,23 +989,23 @@ def main():
                 progress = st.progress(0, text="Looking closely at your picture…")
                 preview = st.empty()
                 try:
-                    with st.spinner("Creating your story… First-time model downloads may take a few minutes."):
-                        with inference_lock():
-                            description = run_stage(generate_image_description, image)
-                            result = {"description": description, "voice": selected_voice}
-                            st.session_state["result"] = result
-                            progress.progress(33, text="Turning details into a story…")
-                            story = run_stage(generate_story, description)
-                            result["story"] = story
-                            preview.markdown(
-                                f'<div class="story-shell">'
-                                f'<div class="story-text">{html.escape(story)}</div>'
-                                f'</div>',
-                                unsafe_allow_html=True,
-                            )
-                            progress.progress(66, text="Giving the story a voice…")
+                    with inference_lock():
+                        description = run_stage(generate_image_description, image)
+                        result = {"description": description, "voice": selected_voice}
+                        st.session_state["result"] = result
+                        progress.progress(33, text="Turning details into a story…")
+                        story = run_stage(generate_story, description)
+                        result["story"] = story
+                        preview.markdown(
+                            f'<div class="story-shell">'
+                            f'<div class="story-text">{html.escape(story)}</div>'
+                            f'</div>',
+                            unsafe_allow_html=True,
+                        )
+                        progress.progress(66, text="Giving the story a voice…")
+                        with st.spinner("Making your story audible…"):
                             result["audio"] = run_stage(generate_audio, story, selected_voice)
-                            progress.progress(100, text="Your story is ready.")
+                        progress.progress(100, text="Your story is ready.")
                 except Exception as exc:
                     LOGGER.exception("Story creation failed")
                     progress.empty()
