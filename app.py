@@ -404,11 +404,16 @@ def inject_apple_style():
         }
 
         [data-testid="stFileUploaderDropzone"] {
-            min-height: 145px;
+            min-height: 88px;
+            padding: .55rem .75rem !important;
             border: 1.5px dashed rgba(255,255,255,.19) !important;
-            border-radius: 22px !important;
+            border-radius: 18px !important;
             background: rgba(255,255,255,.045) !important;
             transition: border-color .25s ease, background .25s ease, transform .25s ease;
+        }
+        [data-testid="stFileUploaderDropzoneInstructions"] {
+            margin: 0 !important;
+            line-height: 1.2 !important;
         }
         [data-testid="stFileUploaderDropzone"]:hover {
             border-color: rgba(167,139,250,.55) !important;
@@ -495,13 +500,13 @@ def inject_apple_style():
             color: #f5f5f7 !important;
         }
 
-        .story-shell { padding: .08rem 0 .3rem; }
+        .story-shell { padding: .02rem 0 .12rem; }
         .story-text {
-            font-size: clamp(1.22rem, 2vw, 1.48rem);
-            line-height: 1.64;
-            letter-spacing: -.025em;
+            font-size: clamp(1.02rem, 1.55vw, 1.18rem);
+            line-height: 1.5;
+            letter-spacing: -.018em;
             color: #f5f5f7 !important;
-            margin: .45rem 0 .75rem;
+            margin: .28rem 0 .52rem;
         }
         .word-chip {
             display: inline-flex;
@@ -516,7 +521,7 @@ def inject_apple_style():
         }
 
         .empty-state {
-            min-height: 320px;
+            min-height: 230px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -592,7 +597,8 @@ def inject_apple_style():
             .hero { margin: .7rem auto 1.8rem; }
             .hero h1 { letter-spacing: -.055em; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
-            .empty-state, .preview-empty { min-height: 230px; }
+            .empty-state { min-height: 190px; }
+            .preview-empty { min-height: 230px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
