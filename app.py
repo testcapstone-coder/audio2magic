@@ -245,22 +245,24 @@ def inject_apple_style():
         :root {
             --ink: #1d1d1f;
             --muted: #6e6e73;
-            --soft: #f5f5f7;
             --line: rgba(29, 29, 31, 0.09);
-            --glass: rgba(255, 255, 255, 0.72);
+            --lavender-a: #f1edff;
+            --lavender-b: #e9efff;
+            --story-a: #ffffff;
+            --story-b: #f7f8fb;
         }
 
-        html, body, [class*="css"] {
+        html, body, [class*="css"], .stApp {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
                          "Helvetica Neue", Arial, sans-serif;
-            color: var(--ink);
+            color: var(--ink) !important;
         }
 
         .stApp {
             background:
-                radial-gradient(circle at 15% -10%, rgba(94, 92, 230, .13), transparent 34rem),
-                radial-gradient(circle at 88% 2%, rgba(0, 122, 255, .12), transparent 30rem),
-                linear-gradient(180deg, #ffffff 0%, #fbfbfd 38%, #f5f5f7 100%);
+                radial-gradient(circle at 12% -8%, rgba(94, 92, 230, .11), transparent 31rem),
+                radial-gradient(circle at 90% 0%, rgba(0, 122, 255, .09), transparent 29rem),
+                linear-gradient(180deg, #ffffff 0%, #fbfbfd 48%, #f5f5f7 100%);
             background-attachment: fixed;
         }
 
@@ -270,165 +272,164 @@ def inject_apple_style():
             -webkit-backdrop-filter: blur(18px) saturate(160%);
             border-bottom: 1px solid rgba(0,0,0,.04);
         }
-
         [data-testid="stToolbar"] { opacity: .72; }
 
         .block-container {
             max-width: 1240px;
-            padding-top: 1.25rem;
-            padding-bottom: 5rem;
-        }
-
-        .apple-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            padding: .35rem .15rem 1.1rem;
-            color: var(--ink);
-            animation: fadeIn .55s ease both;
-        }
-        .apple-brand {
-            font-size: .98rem;
-            font-weight: 700;
-            letter-spacing: -.02em;
-        }
-        .apple-nav-note {
-            color: var(--muted);
-            font-size: .78rem;
-            font-weight: 500;
+            padding-top: 1.1rem;
+            padding-bottom: 4rem;
         }
 
         .hero {
             text-align: center;
             max-width: 920px;
-            margin: 3.4rem auto 3.2rem;
-            animation: rise .72s cubic-bezier(.2,.75,.2,1) both;
-        }
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: .45rem;
-            padding: .42rem .72rem;
-            border-radius: 999px;
-            border: 1px solid rgba(29,29,31,.08);
-            background: rgba(255,255,255,.7);
-            box-shadow: 0 8px 30px rgba(0,0,0,.035);
-            color: #515154;
-            font-size: .72rem;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            margin: 1.1rem auto 2.5rem;
+            animation: rise .7s cubic-bezier(.2,.75,.2,1) both;
         }
         .hero h1 {
-            margin: 1.1rem 0 .9rem;
-            font-size: clamp(3.25rem, 7.4vw, 6.4rem);
-            line-height: .94;
-            letter-spacing: -.072em;
+            margin: 0 0 .9rem;
+            font-size: clamp(3.15rem, 7.2vw, 6.2rem);
+            line-height: .95;
+            letter-spacing: -.07em;
             font-weight: 720;
-            color: #1d1d1f;
+            color: #1d1d1f !important;
         }
         .hero-gradient {
-            background: linear-gradient(90deg, #0071e3 0%, #5e5ce6 50%, #af52de 100%);
+            background: linear-gradient(90deg, #0071e3 0%, #5e5ce6 52%, #af52de 100%);
             -webkit-background-clip: text;
             background-clip: text;
-            color: transparent;
+            color: transparent !important;
         }
         .hero p {
-            max-width: 660px;
+            max-width: 690px;
             margin: 0 auto;
-            color: var(--muted);
-            font-size: clamp(1.06rem, 2vw, 1.35rem);
+            color: var(--muted) !important;
+            font-size: clamp(1.05rem, 2vw, 1.3rem);
             line-height: 1.45;
             letter-spacing: -.025em;
         }
         .flow-pills {
-            margin-top: 1.55rem;
+            margin-top: 1.4rem;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: .48rem;
         }
         .flow-pills span {
-            padding: .46rem .72rem;
+            padding: .44rem .72rem;
             border-radius: 999px;
-            background: rgba(255,255,255,.72);
+            background: rgba(255,255,255,.84);
             border: 1px solid rgba(29,29,31,.07);
-            color: #515154;
+            color: #515154 !important;
             font-size: .78rem;
-            font-weight: 600;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            font-weight: 650;
+            box-shadow: 0 6px 20px rgba(0,0,0,.025);
         }
 
+        /* Shared panel behavior */
         div[data-testid="stVerticalBlockBorderWrapper"] {
             border: 1px solid var(--line) !important;
             border-radius: 30px !important;
-            background: rgba(255,255,255,.74) !important;
-            backdrop-filter: blur(22px) saturate(150%);
-            -webkit-backdrop-filter: blur(22px) saturate(150%);
-            box-shadow: 0 20px 60px rgba(0,0,0,.055);
-            transition: transform .32s cubic-bezier(.2,.8,.2,1), box-shadow .32s ease, border-color .32s ease;
+            box-shadow: 0 20px 58px rgba(0,0,0,.055);
+            transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;
             overflow: hidden;
-            animation: rise .72s .06s cubic-bezier(.2,.75,.2,1) both;
+            animation: rise .72s .05s cubic-bezier(.2,.75,.2,1) both;
         }
         div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             border-color: rgba(29,29,31,.14) !important;
-            box-shadow: 0 28px 75px rgba(0,0,0,.075);
+            box-shadow: 0 26px 68px rgba(0,0,0,.072);
         }
         div[data-testid="stVerticalBlockBorderWrapper"] > div {
-            padding: 1.25rem .7rem .7rem;
+            padding: 1.35rem .82rem .78rem;
+        }
+
+        /* The input controls deliberately share one lavender card. */
+        .st-key-setup_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
+            background: linear-gradient(145deg, rgba(244,240,255,.98), rgba(233,239,255,.96)) !important;
+            border-color: rgba(94,92,230,.13) !important;
+        }
+
+        /* Your Story has its own separate, neutral background. */
+        .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
+            background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,248,251,.98)) !important;
         }
 
         .section-kicker {
-            color: #86868b;
+            color: #76767b !important;
             font-size: .72rem;
-            font-weight: 750;
+            font-weight: 760;
             letter-spacing: .1em;
             text-transform: uppercase;
-            margin-bottom: .15rem;
+            margin-bottom: .18rem;
         }
         .section-title {
-            color: var(--ink);
-            font-size: clamp(1.85rem, 3vw, 2.5rem);
-            font-weight: 700;
+            color: #1d1d1f !important;
+            font-size: clamp(1.72rem, 2.9vw, 2.35rem);
+            font-weight: 710;
             letter-spacing: -.045em;
-            line-height: 1.05;
+            line-height: 1.06;
             margin-bottom: .45rem;
         }
         .section-copy {
-            color: var(--muted);
-            font-size: .96rem;
-            line-height: 1.45;
-            margin-bottom: 1.15rem;
+            color: #5f5f64 !important;
+            font-size: .95rem;
+            line-height: 1.46;
+            margin-bottom: 1rem;
+        }
+        .control-heading {
+            color: #1d1d1f !important;
+            font-size: 1rem;
+            font-weight: 720;
+            letter-spacing: -.02em;
+            margin: .95rem 0 .35rem;
+        }
+
+        /* Force Streamlit widget copy to remain readable in both light and dark OS modes. */
+        .stApp p,
+        .stApp label,
+        .stApp [data-testid="stMarkdownContainer"],
+        .stApp [data-testid="stFileUploaderDropzoneInstructions"],
+        .stApp [data-baseweb="select"] *,
+        .stApp [data-testid="stCaptionContainer"] {
+            color: #1d1d1f !important;
+        }
+        .stApp small,
+        .stApp [data-testid="stFileUploaderDropzoneInstructions"] small,
+        .stApp [data-testid="stCaptionContainer"] p {
+            color: #6e6e73 !important;
         }
 
         [data-testid="stFileUploaderDropzone"] {
-            min-height: 150px;
-            border: 1.5px dashed rgba(29,29,31,.16) !important;
+            min-height: 145px;
+            border: 1.5px dashed rgba(65,65,70,.22) !important;
             border-radius: 22px !important;
-            background: rgba(245,245,247,.65) !important;
+            background: rgba(255,255,255,.62) !important;
             transition: border-color .25s ease, background .25s ease, transform .25s ease;
         }
         [data-testid="stFileUploaderDropzone"]:hover {
             border-color: rgba(0,113,227,.5) !important;
-            background: rgba(0,113,227,.035) !important;
-            transform: scale(1.004);
+            background: rgba(255,255,255,.82) !important;
+            transform: scale(1.003);
         }
         [data-testid="stFileUploaderDropzone"] button {
             border-radius: 999px !important;
             border: 0 !important;
-            background: white !important;
+            background: #ffffff !important;
+            color: #1d1d1f !important;
             box-shadow: 0 5px 18px rgba(0,0,0,.08) !important;
         }
 
-        div[data-testid="stImage"] img {
-            border-radius: 22px !important;
-            box-shadow: 0 12px 38px rgba(0,0,0,.09);
-            animation: fadeIn .45s ease both;
+        [data-baseweb="select"] > div {
+            border-radius: 16px !important;
+            border-color: rgba(29,29,31,.11) !important;
+            background: rgba(255,255,255,.7) !important;
+            min-height: 3rem;
+            color: #1d1d1f !important;
+        }
+        [data-baseweb="select"] > div:focus-within {
+            border-color: rgba(0,113,227,.45) !important;
+            box-shadow: 0 0 0 3px rgba(0,113,227,.08) !important;
         }
 
         .stButton > button,
@@ -442,28 +443,27 @@ def inject_apple_style():
             transition: transform .2s ease, box-shadow .2s ease, filter .2s ease !important;
         }
         .stButton > button[kind="primary"] {
-            color: white !important;
+            color: #ffffff !important;
             background: linear-gradient(135deg, #1d1d1f 0%, #3a3a3c 100%) !important;
             box-shadow: 0 10px 28px rgba(0,0,0,.16) !important;
         }
+        .stButton > button[kind="primary"] p { color: #ffffff !important; }
         .stButton > button:hover,
         .stDownloadButton > button:hover {
-            transform: translateY(-2px) scale(1.006);
+            transform: translateY(-2px) scale(1.005);
             filter: brightness(1.02);
             box-shadow: 0 14px 34px rgba(0,0,0,.17) !important;
         }
         .stButton > button:active,
         .stDownloadButton > button:active { transform: scale(.99); }
 
-        [data-baseweb="select"] > div {
-            border-radius: 16px !important;
-            border-color: rgba(29,29,31,.09) !important;
-            background: rgba(245,245,247,.78) !important;
-            min-height: 3rem;
+        div[data-testid="stImage"] {
+            margin-top: .8rem;
         }
-        [data-baseweb="select"] > div:focus-within {
-            border-color: rgba(0,113,227,.45) !important;
-            box-shadow: 0 0 0 3px rgba(0,113,227,.08) !important;
+        div[data-testid="stImage"] img {
+            border-radius: 22px !important;
+            box-shadow: 0 12px 38px rgba(0,0,0,.09);
+            animation: fadeIn .45s ease both;
         }
 
         [data-testid="stProgress"] > div > div > div > div {
@@ -473,31 +473,28 @@ def inject_apple_style():
             border-radius: 999px !important;
             overflow: hidden;
         }
-
         [data-testid="stAudio"] {
             border-radius: 18px;
             overflow: hidden;
         }
-
         details {
             border: 1px solid rgba(29,29,31,.08) !important;
             border-radius: 18px !important;
-            background: rgba(245,245,247,.56) !important;
+            background: rgba(255,255,255,.62) !important;
+            color: #1d1d1f !important;
         }
-
         [data-testid="stAlert"] {
             border-radius: 18px !important;
             border: 1px solid rgba(29,29,31,.06) !important;
+            color: #1d1d1f !important;
         }
 
-        .story-shell {
-            padding: .15rem 0 .3rem;
-        }
+        .story-shell { padding: .08rem 0 .3rem; }
         .story-text {
-            font-size: clamp(1.22rem, 2vw, 1.5rem);
-            line-height: 1.62;
+            font-size: clamp(1.22rem, 2vw, 1.48rem);
+            line-height: 1.64;
             letter-spacing: -.025em;
-            color: #1d1d1f;
+            color: #1d1d1f !important;
             margin: .45rem 0 .75rem;
         }
         .word-chip {
@@ -505,15 +502,15 @@ def inject_apple_style():
             align-items: center;
             padding: .35rem .62rem;
             border-radius: 999px;
-            background: #f5f5f7;
-            color: #6e6e73;
+            background: #ececf1;
+            color: #59595e !important;
             font-size: .75rem;
-            font-weight: 650;
+            font-weight: 680;
             margin-bottom: 1rem;
         }
 
         .empty-state {
-            min-height: 330px;
+            min-height: 320px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -522,9 +519,9 @@ def inject_apple_style():
             padding: 2rem;
             border-radius: 24px;
             background:
-                radial-gradient(circle at 35% 25%, rgba(0,113,227,.10), transparent 32%),
-                radial-gradient(circle at 70% 68%, rgba(175,82,222,.10), transparent 34%),
-                #f7f7f9;
+                radial-gradient(circle at 35% 25%, rgba(0,113,227,.08), transparent 32%),
+                radial-gradient(circle at 70% 68%, rgba(175,82,222,.08), transparent 34%),
+                rgba(247,247,249,.92);
             overflow: hidden;
             position: relative;
         }
@@ -536,31 +533,33 @@ def inject_apple_style():
             box-shadow: 0 18px 45px rgba(0,0,0,.09), inset 0 1px 0 rgba(255,255,255,.9);
             display: grid;
             place-items: center;
+            color: #1d1d1f !important;
             font-size: 2rem;
             margin-bottom: 1rem;
             animation: float 4s ease-in-out infinite;
         }
         .empty-state strong {
+            color: #1d1d1f !important;
             font-size: 1.15rem;
             letter-spacing: -.025em;
         }
         .empty-state p {
             max-width: 360px;
             margin: .45rem auto 0;
-            color: var(--muted);
+            color: #6e6e73 !important;
             font-size: .9rem;
             line-height: 1.45;
         }
 
         .footer-note {
             text-align: center;
-            color: #86868b;
+            color: #86868b !important;
             font-size: .78rem;
-            padding-top: 2.6rem;
+            padding-top: 2.4rem;
         }
 
         @keyframes rise {
-            from { opacity: 0; transform: translateY(18px); }
+            from { opacity: 0; transform: translateY(16px); }
             to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes fadeIn {
@@ -574,9 +573,8 @@ def inject_apple_style():
 
         @media (max-width: 800px) {
             .block-container { padding-left: 1rem; padding-right: 1rem; }
-            .hero { margin: 2.2rem auto 2rem; }
+            .hero { margin: .7rem auto 1.8rem; }
             .hero h1 { letter-spacing: -.055em; }
-            .apple-nav-note { display: none; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
             .empty-state { min-height: 230px; }
         }
@@ -593,7 +591,6 @@ def inject_apple_style():
         """,
         unsafe_allow_html=True,
     )
-
 
 def render_result(result: dict):
     """Display partial results too, so a narration failure never hides the story."""
@@ -627,14 +624,10 @@ def main():
     )
     inject_apple_style()
 
+    # Keep the hero focused: the former top navigation and eyebrow badge were removed.
     st.markdown(
         """
-        <div class="apple-nav">
-            <div class="apple-brand">Magic Story Maker</div>
-            <div class="apple-nav-note">Image intelligence · Story generation · Natural narration</div>
-        </div>
         <section class="hero">
-            <div class="eyebrow">Made for little imaginations</div>
             <h1>One picture.<br><span class="hero-gradient">A whole new story.</span></h1>
             <p>Upload an image and watch it become a warm, playful adventure you can read and hear.</p>
             <div class="flow-pills">
@@ -647,15 +640,16 @@ def main():
         unsafe_allow_html=True,
     )
 
-    left, right = st.columns([0.95, 1.05], gap="large")
+    left, right = st.columns([0.92, 1.08], gap="large")
     image = None
 
     with left:
-        with st.container(border=True):
+        # Upload + storyteller intentionally share the same lavender panel.
+        with st.container(border=True, key="setup_panel"):
             st.markdown(
                 """
-                <div class="section-kicker">01 · Your image</div>
-                <div class="section-title">Start with a picture.</div>
+                <div class="section-kicker">Create</div>
+                <div class="section-title">Upload Your Picture</div>
                 <div class="section-copy">Choose a JPG or PNG. Clear, colorful images work best.</div>
                 """,
                 unsafe_allow_html=True,
@@ -667,30 +661,39 @@ def main():
             if st.session_state.get("image_id") != image_id:
                 st.session_state["image_id"] = image_id
                 st.session_state.pop("result", None)
+
             if uploaded is not None:
                 try:
                     with Image.open(io.BytesIO(uploaded.getvalue())) as original:
                         image = ImageOps.exif_transpose(original).convert("RGB")
                 except (OSError, ValueError, Image.DecompressionBombError):
                     st.error("This picture could not be opened. Please upload another JPG or PNG.")
-            if image is not None:
-                st.image(image, width="stretch")
+
+            st.markdown('<div class="control-heading">Choose Your Storyteller</div>', unsafe_allow_html=True)
+            selected_name = st.selectbox(
+                "Choose Your Storyteller", list(VOICE_OPTIONS), label_visibility="collapsed"
+            )
+            selected_voice = VOICE_OPTIONS[selected_name]
+
+            # The action now sits above the uploaded-image preview.
             create_clicked = st.button(
                 "Create My Story", type="primary", disabled=image is None, use_container_width=True
             )
 
+            if image is not None:
+                st.image(image, width="stretch")
+
     with right:
-        with st.container(border=True):
+        # A visually separate background is used only for the story area.
+        with st.container(border=True, key="story_panel"):
             st.markdown(
                 """
-                <div class="section-kicker">02 · Your story</div>
-                <div class="section-title">Now, let it come alive.</div>
-                <div class="section-copy">Choose a voice, then your picture becomes a short story with narration.</div>
+                <div class="section-kicker">Your creation</div>
+                <div class="section-title">Your Story</div>
+                <div class="section-copy">Your picture becomes a short story with natural narration.</div>
                 """,
                 unsafe_allow_html=True,
             )
-            selected_name = st.selectbox("Choose your storyteller", list(VOICE_OPTIONS))
-            selected_voice = VOICE_OPTIONS[selected_name]
 
             if create_clicked and image is not None:
                 st.session_state.pop("result", None)
@@ -731,7 +734,7 @@ def main():
                     <div class="empty-state">
                         <div class="empty-orb">✦</div>
                         <strong>Your story will appear here.</strong>
-                        <p>Upload a picture, pick a storyteller, and the app will create the rest.</p>
+                        <p>Upload a picture, choose a storyteller, then create your story.</p>
                     </div>
                     """,
                     unsafe_allow_html=True,
