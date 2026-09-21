@@ -354,12 +354,15 @@ def inject_apple_style():
             border-color: rgba(167,139,250,.20) !important;
         }
 
+        /* Keep Preview and Your Story visually balanced and aligned. */
         .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"],
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
             background: linear-gradient(180deg, rgba(18,18,22,.98), rgba(12,12,16,.98)) !important;
+            min-height: 440px;
         }
+        .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div,
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div {
-            padding: .95rem .72rem .62rem;
+            padding: 1.15rem 1rem 1rem;
         }
 
         .section-kicker {
@@ -531,17 +534,18 @@ def inject_apple_style():
         }
 
         .empty-state {
-            min-height: 145px;
+            min-height: 235px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: .9rem 1rem;
-            border-radius: 20px;
+            padding: 1.15rem 1.2rem;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,.04);
             background:
-                radial-gradient(circle at 35% 25%, rgba(100,168,255,.08), transparent 32%),
-                radial-gradient(circle at 70% 68%, rgba(210,140,255,.08), transparent 34%),
+                radial-gradient(circle at 35% 25%, rgba(100,168,255,.07), transparent 34%),
+                radial-gradient(circle at 70% 68%, rgba(210,140,255,.07), transparent 36%),
                 rgba(255,255,255,.025);
             overflow: hidden;
             position: relative;
@@ -572,14 +576,23 @@ def inject_apple_style():
             line-height: 1.35;
         }
         .preview-empty {
-            min-height: 320px;
+            min-height: 235px;
             display: grid;
             place-items: center;
             text-align: center;
-            border-radius: 24px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,.04);
             background: rgba(255,255,255,.025);
             color: #8e8e93 !important;
-            padding: 2rem;
+            padding: 1.4rem;
+        }
+
+        /* Uploaded images stay inside the same visual footprint as the empty state. */
+        .st-key-preview_panel div[data-testid="stImage"] img {
+            width: 100% !important;
+            height: 235px !important;
+            object-fit: contain !important;
+            background: rgba(255,255,255,.025);
         }
 
         .footer-note {
@@ -607,8 +620,13 @@ def inject_apple_style():
             .hero { margin: .7rem auto 1.8rem; }
             .hero h1 { letter-spacing: -.055em; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
-            .empty-state { min-height: 125px; }
-            .preview-empty { min-height: 230px; }
+            .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"],
+            .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
+                min-height: 0;
+            }
+            .empty-state,
+            .preview-empty { min-height: 190px; }
+            .st-key-preview_panel div[data-testid="stImage"] img { height: 190px !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -722,7 +740,7 @@ def main():
         )
 
     # Preview and story start on the same horizontal line.
-    preview_col, story_col = st.columns([0.92, 1.08], gap="large")
+    preview_col, story_col = st.columns(2, gap="large")
 
     with preview_col:
         with st.container(border=True, key="preview_panel"):
