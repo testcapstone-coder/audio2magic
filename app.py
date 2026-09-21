@@ -506,8 +506,27 @@ def inject_apple_style():
             border-radius: 16px !important;
             border-color: rgba(255,255,255,.11) !important;
             background: rgba(255,255,255,.06) !important;
-            min-height: 3rem;
+            min-height: 3rem !important;
+            height: 3rem !important;
             color: #f5f5f7 !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        [data-baseweb="select"] > div > div {
+            min-height: 3rem !important;
+            display: flex !important;
+            align-items: center !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        [data-baseweb="select"] div[role="combobox"] {
+            display: flex !important;
+            align-items: center !important;
+            min-height: 3rem !important;
+            font-size: .92rem !important;
+            font-weight: 560 !important;
+            line-height: 1.2 !important;
+            letter-spacing: -.01em !important;
         }
         [data-baseweb="select"] > div:focus-within {
             border-color: rgba(167,139,250,.48) !important;
@@ -587,6 +606,16 @@ def inject_apple_style():
             border-radius: 999px !important;
             overflow: hidden;
         }
+        [data-testid="stProgress"] {
+            margin: .65rem 0 .75rem !important;
+        }
+        [data-testid="stProgress"] p {
+            margin-bottom: .32rem !important;
+            font-size: .82rem !important;
+            line-height: 1.25 !important;
+            font-weight: 600 !important;
+            color: #d8d8de !important;
+        }
         [data-testid="stAudio"] {
             border-radius: 18px;
             overflow: hidden;
@@ -610,15 +639,16 @@ def inject_apple_style():
             padding: .38rem .6rem !important;
         }
         .st-key-description_panel details summary p {
-            font-size: .76rem !important;
-            line-height: 1.2 !important;
+            font-size: .84rem !important;
+            line-height: 1.25 !important;
+            font-weight: 600 !important;
         }
         .st-key-description_panel [data-testid="stExpanderDetails"] {
             padding: .25rem .7rem .55rem !important;
         }
         .st-key-description_panel [data-testid="stExpanderDetails"] p {
-            font-size: .76rem !important;
-            line-height: 1.35 !important;
+            font-size: .82rem !important;
+            line-height: 1.42 !important;
         }
         [data-testid="stAlert"] {
             border-radius: 18px !important;
@@ -883,8 +913,13 @@ def main():
                 """,
                 unsafe_allow_html=True,
             )
+            voice_names = list(VOICE_OPTIONS)
+            default_voice_index = list(VOICE_OPTIONS.values()).index(DEFAULT_VOICE)
             selected_name = st.selectbox(
-                "Choose Your Storyteller", list(VOICE_OPTIONS), label_visibility="collapsed"
+                "Choose Your Storyteller",
+                voice_names,
+                index=default_voice_index,
+                label_visibility="collapsed",
             )
             selected_voice = VOICE_OPTIONS[selected_name]
 
@@ -956,7 +991,10 @@ def main():
                             story = run_stage(generate_story, description)
                             result["story"] = story
                             preview.markdown(
-                                f'<div class="story-text">{html.escape(story)}</div>', unsafe_allow_html=True
+                                f'<div class="story-shell">'
+                                f'<div class="story-text">{html.escape(story)}</div>'
+                                f'</div>',
+                                unsafe_allow_html=True,
                             )
                             progress.progress(66, text="Giving the story a voice…")
                             result["audio"] = run_stage(generate_audio, story, selected_voice)
