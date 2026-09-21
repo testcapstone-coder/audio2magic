@@ -355,10 +355,10 @@ def inject_apple_style():
             border-color: rgba(167,139,250,.20) !important;
         }
 
-        /* Your Story stays in its card; Preview is intentionally borderless. */
+        /* Your Story stays in its card; Preview is borderless and vertically centered beside it. */
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
             background: linear-gradient(180deg, rgba(18,18,22,.98), rgba(12,12,16,.98)) !important;
-            min-height: 440px;
+            min-height: 470px;
         }
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div {
             padding: 1.15rem 1rem 1rem;
@@ -368,9 +368,14 @@ def inject_apple_style():
             background: transparent !important;
             border: 0 !important;
             box-shadow: none !important;
-            min-height: 0 !important;
+            min-height: 470px !important;
+            height: 470px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
         .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div {
+            width: 100% !important;
             padding: 0 !important;
         }
 
@@ -700,8 +705,10 @@ def inject_apple_style():
             .hero { margin: .7rem auto 1.8rem; }
             .hero h1 { letter-spacing: -.055em; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
-            .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
-                min-height: 0;
+            .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"],
+            .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
+                min-height: 0 !important;
+                height: auto !important;
             }
             .empty-state { min-height: 190px; }
             .preview-empty,
