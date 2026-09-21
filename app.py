@@ -379,6 +379,12 @@ def inject_apple_style():
             padding: 0 !important;
         }
 
+        /* Extra breathing room after the Preview / Your Story row. */
+        .st-key-preview_panel,
+        .st-key-story_panel {
+            margin-bottom: 2rem !important;
+        }
+
         .section-kicker {
             color: #92929a !important;
             font-size: .72rem;
@@ -551,7 +557,8 @@ def inject_apple_style():
             box-shadow: 0 8px 24px rgba(110,92,255,.24) !important;
         }
         .st-key-create_story .stButton > button p {
-            font-size: .78rem !important;
+            font-size: .95rem !important;
+            font-weight: 650 !important;
         }
 
         div[data-testid="stImage"] { margin-top: .25rem; }
