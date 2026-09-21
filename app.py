@@ -20,12 +20,12 @@ from kokoro import KModel, KPipeline
 from transformers import AutoModelForCausalLM, AutoProcessor, pipeline
 
 # Model configuration
-FLORENCE_MODEL = "microsoft/Florence-2-base"
+CAPTION_MODEL = "microsoft/Florence-2-base"
 # Pin the custom modeling/processor code and weights to the reviewed repository revision.
 FLORENCE_REVISION = "5ca5edf5bd017b9919c05d08aebef5e4c7ac3bac"
 FLORENCE_TASK = "<MORE_DETAILED_CAPTION>"
 STORY_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"
-TTS_MODEL = "hexgrad/Kokoro-82M"
+AUDIO_MODEL = "hexgrad/Kokoro-82M"
 SPACY_MODEL = "en_core_web_sm"
 
 # Application configuration
@@ -35,7 +35,7 @@ TARGET_STORY_WORDS = 65
 MAX_STORY_ATTEMPTS = 3
 NARRATION_SPEED = 0.95
 AUDIO_SAMPLE_RATE = 24000
-DEFAULT_VOICE = "am_michael"
+DEFAULT_VOICE = "af_bella"
 ALLOWED_IMAGE_TYPES = ["jpg", "jpeg", "png"]
 
 VOICE_OPTIONS = {
@@ -88,10 +88,10 @@ def run_stage(function, *args):
 def load_florence_model():
     """Load Microsoft's custom Florence implementation on CPU without FlashAttention."""
     processor = AutoProcessor.from_pretrained(
-        FLORENCE_MODEL, revision=FLORENCE_REVISION, trust_remote_code=True,
+        CAPTION_MODEL, revision=FLORENCE_REVISION, trust_remote_code=True,
     )
     model = AutoModelForCausalLM.from_pretrained(
-        FLORENCE_MODEL, revision=FLORENCE_REVISION, trust_remote_code=True,
+        CAPTION_MODEL, revision=FLORENCE_REVISION, trust_remote_code=True,
         torch_dtype=torch.float32, attn_implementation="eager",
     ).to("cpu").eval()
     return processor, model
@@ -219,7 +219,7 @@ def generate_story(description: str) -> str:
 
 def load_kokoro_model():
     """Load Kokoro only for the current narration, then release it."""
-    return KModel(repo_id=TTS_MODEL).to("cpu").eval()
+    return KModel(repo_id=AUDIO_MODEL).to("cpu").eval()
 
 
 def load_tts_model(lang_code: str):
@@ -229,7 +229,7 @@ def load_tts_model(lang_code: str):
             "installed at build time; runtime package installation is not supported."
         )
     return KPipeline(
-        lang_code=lang_code, repo_id=TTS_MODEL, model=load_kokoro_model(),
+        lang_code=lang_code, repo_id=AUDIO_MODEL, model=load_kokoro_model(),
     )
 
 
