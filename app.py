@@ -354,15 +354,23 @@ def inject_apple_style():
             border-color: rgba(167,139,250,.20) !important;
         }
 
-        /* Keep Preview and Your Story visually balanced and aligned. */
-        .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"],
+        /* Your Story stays in its card; Preview is intentionally borderless. */
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
             background: linear-gradient(180deg, rgba(18,18,22,.98), rgba(12,12,16,.98)) !important;
             min-height: 440px;
         }
-        .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div,
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div {
             padding: 1.15rem 1rem 1rem;
+        }
+
+        .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            min-height: 0 !important;
+        }
+        .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div {
+            padding: 0 !important;
         }
 
         .section-kicker {
@@ -517,6 +525,29 @@ def inject_apple_style():
             font-size: .7rem !important;
         }
 
+        /* Compact, centered primary story action. */
+        .st-key-create_story {
+            display: flex !important;
+            justify-content: center !important;
+            width: 100% !important;
+            padding-top: .35rem;
+        }
+        .st-key-create_story .stButton {
+            width: auto !important;
+        }
+        .st-key-create_story .stButton > button {
+            width: auto !important;
+            min-width: 9.5rem !important;
+            min-height: 2rem !important;
+            height: 2rem !important;
+            padding: .24rem .9rem !important;
+            font-size: .68rem !important;
+            box-shadow: 0 8px 24px rgba(110,92,255,.24) !important;
+        }
+        .st-key-create_story .stButton > button p {
+            font-size: .68rem !important;
+        }
+
         div[data-testid="stImage"] { margin-top: .25rem; }
         div[data-testid="stImage"] img {
             border-radius: 22px !important;
@@ -622,18 +653,24 @@ def inject_apple_style():
             place-items: center;
             text-align: center;
             border-radius: 22px;
-            border: 1px solid rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.10);
             background: rgba(255,255,255,.025);
             color: #8e8e93 !important;
             padding: 1.4rem;
         }
 
         /* Uploaded images stay inside the same visual footprint as the empty state. */
+        .st-key-preview_panel div[data-testid="stImage"] {
+            margin-top: 0 !important;
+        }
         .st-key-preview_panel div[data-testid="stImage"] img {
             width: 100% !important;
             height: 235px !important;
             object-fit: contain !important;
+            border: 1px solid rgba(255,255,255,.10) !important;
+            border-radius: 22px !important;
             background: rgba(255,255,255,.025);
+            box-sizing: border-box;
         }
 
         .footer-note {
@@ -661,7 +698,6 @@ def inject_apple_style():
             .hero { margin: .7rem auto 1.8rem; }
             .hero h1 { letter-spacing: -.055em; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
-            .st-key-preview_panel > div[data-testid="stVerticalBlockBorderWrapper"],
             .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
                 min-height: 0;
             }
@@ -777,22 +813,18 @@ def main():
 
         # Keep the primary action above the preview area.
         create_clicked = st.button(
-            "Create My Story", type="primary", disabled=image is None, use_container_width=True
+            "✨ Create My Story",
+            type="primary",
+            disabled=image is None,
+            use_container_width=False,
+            key="create_story",
         )
 
     # Preview and story start on the same horizontal line.
     preview_col, story_col = st.columns(2, gap="large")
 
     with preview_col:
-        with st.container(border=True, key="preview_panel"):
-            st.markdown(
-                """
-                <div class="section-kicker">Your image</div>
-                <div class="section-title">Preview</div>
-                <div class="section-copy">This is the picture your story will be based on.</div>
-                """,
-                unsafe_allow_html=True,
-            )
+        with st.container(border=False, key="preview_panel"):
             if image is not None:
                 st.image(image, width="stretch")
             else:
