@@ -26,11 +26,10 @@ FLORENCE_TASK = "<MORE_DETAILED_CAPTION>"
 STORY_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"
 NARRATION_SPEED = 0.95
 VOICE_OPTIONS = {
-    "🧙 Michael — American Male": "am_michael",
     "🧚 Bella — Warm American": "af_bella",
     "💖 Heart — Friendly American": "af_heart",
     "🇬🇧 Emma — British": "bf_emma",
-    
+    "🧙 Michael — American Male": "am_michael",
 }
 LOGGER = logging.getLogger(__name__)
 SYSTEM_PROMPT = (
@@ -580,6 +579,29 @@ def inject_apple_style():
             background: rgba(255,255,255,.035) !important;
             color: #f5f5f7 !important;
         }
+
+        /* Compact detailed-description panel under the preview. */
+        .st-key-description_panel {
+            margin-top: 1.5rem !important;
+        }
+        .st-key-description_panel details {
+            border-radius: 12px !important;
+        }
+        .st-key-description_panel details summary {
+            min-height: 2rem !important;
+            padding: .38rem .6rem !important;
+        }
+        .st-key-description_panel details summary p {
+            font-size: .76rem !important;
+            line-height: 1.2 !important;
+        }
+        .st-key-description_panel [data-testid="stExpanderDetails"] {
+            padding: .25rem .7rem .55rem !important;
+        }
+        .st-key-description_panel [data-testid="stExpanderDetails"] p {
+            font-size: .76rem !important;
+            line-height: 1.35 !important;
+        }
         [data-testid="stAlert"] {
             border-radius: 18px !important;
             border: 1px solid rgba(255,255,255,.08) !important;
@@ -936,8 +958,9 @@ def main():
 
                 if result.get("story") and result.get("description"):
                     with description_slot.container():
-                        with st.expander("Detailed image description"):
-                            st.write(result["description"])
+                        with st.container(key="description_panel"):
+                            with st.expander("Detailed image description"):
+                                st.write(result["description"])
 
                 if selected_voice != result["voice"]:
                     st.info("Click Create My Story to make a new story with your chosen storyteller.")
