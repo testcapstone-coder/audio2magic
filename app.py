@@ -355,10 +355,10 @@ def inject_apple_style():
             border-color: rgba(167,139,250,.20) !important;
         }
 
-        /* Your Story stays in its card; Preview is borderless and vertically centered beside it. */
+        /* Balance Preview and Your Story as one clean product-style row. */
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
             background: linear-gradient(180deg, rgba(18,18,22,.98), rgba(12,12,16,.98)) !important;
-            min-height: 470px;
+            min-height: 435px;
         }
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div {
             padding: 1.15rem 1rem 1rem;
@@ -368,8 +368,8 @@ def inject_apple_style():
             background: transparent !important;
             border: 0 !important;
             box-shadow: none !important;
-            min-height: 470px !important;
-            height: 470px !important;
+            min-height: 435px !important;
+            height: 435px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -612,19 +612,17 @@ def inject_apple_style():
         }
 
         .empty-state {
-            min-height: 235px;
+            min-height: 270px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 1.15rem 1.2rem;
-            border-radius: 22px;
-            border: 1px solid rgba(255,255,255,.04);
-            background:
-                radial-gradient(circle at 35% 25%, rgba(100,168,255,.07), transparent 34%),
-                radial-gradient(circle at 70% 68%, rgba(210,140,255,.07), transparent 36%),
-                rgba(255,255,255,.025);
+            padding: .75rem 1.2rem;
+            border: 0 !important;
+            border-radius: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
             overflow: hidden;
             position: relative;
         }
@@ -656,14 +654,14 @@ def inject_apple_style():
         .preview-empty,
         .preview-image-box {
             width: 100%;
-            height: 235px;
+            height: 270px;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 0 !important;
             background: transparent !important;
             box-shadow: none !important;
-            overflow: hidden;
+            overflow: visible;
             box-sizing: border-box;
         }
 
@@ -678,6 +676,7 @@ def inject_apple_style():
             margin: auto;
             border: 0;
             background: transparent;
+            box-shadow: 0 18px 42px rgba(0,0,0,.22);
         }
 
         .footer-note {
@@ -710,9 +709,9 @@ def inject_apple_style():
                 min-height: 0 !important;
                 height: auto !important;
             }
-            .empty-state { min-height: 190px; }
+            .empty-state { min-height: 205px; }
             .preview-empty,
-            .preview-image-box { height: 190px !important; }
+            .preview-image-box { height: 215px !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
