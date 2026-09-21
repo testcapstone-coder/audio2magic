@@ -258,45 +258,49 @@ def main():
     st.write("Turn your picture into a little adventure you can read and listen to!")
     st.markdown(
         """<style>
-        .st-key-picture_controls, .st-key-story_controls,
-        .st-key-picture_panel, .st-key-story_panel {
+        .st-key-creation_controls, .st-key-picture_panel, .st-key-story_panel {
             padding: 1rem;
             border: 1px solid transparent;
             border-radius: 1rem;
         }
-        .st-key-story_controls, .st-key-story_panel {
+        .st-key-creation_controls {
             background-color: rgba(139, 92, 246, 0.12);
             border-color: rgba(139, 92, 246, 0.28);
+        }
+        .st-key-story_panel {
+            background-color: rgba(20, 184, 166, 0.12);
+            border-color: rgba(20, 184, 166, 0.30);
         }
         </style>""",
         unsafe_allow_html=True,
     )
     # Shared rows keep the two sides aligned, regardless of uploader height.
-    upload_column, voice_column = st.columns([1, 1.3], gap="large")
-    image = None
-    with upload_column, st.container(key="picture_controls"):
-        st.subheader("🖼 Upload Your Picture")
-        uploaded = st.file_uploader(
-            "Upload your picture", type=["jpg", "jpeg", "png"], label_visibility="collapsed",
-        )
-        image_id = hashlib.sha256(uploaded.getvalue()).hexdigest() if uploaded else None
-        if st.session_state.get("image_id") != image_id:
-            st.session_state["image_id"] = image_id
-            st.session_state.pop("result", None)
-        if uploaded is not None:
-            try:
-                with Image.open(io.BytesIO(uploaded.getvalue())) as original:
-                    image = ImageOps.exif_transpose(original).convert("RGB")
-            except (OSError, ValueError, Image.DecompressionBombError):
-                st.error("This picture could not be opened. Please upload another JPG or PNG.")
-        create_clicked = st.button("✨ Create My Story", type="primary", disabled=image is None)
+    with st.container(key="creation_controls"):
+        upload_column, voice_column = st.columns([1, 1.3], gap="large")
+        image = None
+        with upload_column:
+            st.subheader("🖼 Upload Your Picture")
+            uploaded = st.file_uploader(
+                "Upload your picture", type=["jpg", "jpeg", "png"], label_visibility="collapsed",
+            )
+            image_id = hashlib.sha256(uploaded.getvalue()).hexdigest() if uploaded else None
+            if st.session_state.get("image_id") != image_id:
+                st.session_state["image_id"] = image_id
+                st.session_state.pop("result", None)
+            if uploaded is not None:
+                try:
+                    with Image.open(io.BytesIO(uploaded.getvalue())) as original:
+                        image = ImageOps.exif_transpose(original).convert("RGB")
+                except (OSError, ValueError, Image.DecompressionBombError):
+                    st.error("This picture could not be opened. Please upload another JPG or PNG.")
+            create_clicked = st.button("✨ Create My Story", type="primary", disabled=image is None)
 
-    with voice_column, st.container(key="story_controls"):
-        st.subheader("🎙 Choose Your Storyteller")
-        selected_name = st.selectbox(
-            "Choose your storyteller", list(VOICE_OPTIONS), label_visibility="collapsed",
-        )
-        selected_voice = VOICE_OPTIONS[selected_name]
+        with voice_column:
+            st.subheader("🎙 Choose Your Storyteller")
+            selected_name = st.selectbox(
+                "Choose your storyteller", list(VOICE_OPTIONS), label_visibility="collapsed",
+            )
+            selected_voice = VOICE_OPTIONS[selected_name]
 
     picture_column, story_column = st.columns([1, 1.3], gap="large")
     with picture_column, st.container(key="picture_panel"):
