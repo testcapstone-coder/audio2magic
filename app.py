@@ -1,4 +1,5 @@
 """ISOM5240: Florence image description → SmolLM2 story → Kokoro narration."""
+import base64
 import gc
 import ctypes
 import sys
@@ -647,40 +648,31 @@ def inject_apple_style():
             font-size: .8rem;
             line-height: 1.35;
         }
-        .preview-empty {
+        .preview-empty,
+        .preview-image-box {
+            width: 100%;
             height: 235px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border: 0 !important;
             background: transparent !important;
+            box-shadow: none !important;
+            overflow: hidden;
             box-sizing: border-box;
         }
 
-        /* Keep the preview footprint invisible and always show the full uploaded picture. */
-        .st-key-preview_panel div[data-testid="stImage"] {
-            width: 100% !important;
-            height: 235px !important;
-            margin: 0 !important;
-            padding: .7rem !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            border: 0 !important;
-            border-radius: 0 !important;
-            background: transparent !important;
-            box-shadow: none !important;
-            box-sizing: border-box !important;
-            overflow: hidden !important;
-        }
-        .st-key-preview_panel div[data-testid="stImage"] img {
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            object-fit: contain !important;
-            object-position: center center !important;
-            border: 0 !important;
-            border-radius: 0 !important;
-            background: transparent !important;
-            box-sizing: border-box;
+        .preview-image-box img {
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            object-position: center center;
+            margin: auto;
+            border: 0;
+            background: transparent;
         }
 
         .footer-note {
@@ -713,7 +705,7 @@ def inject_apple_style():
             }
             .empty-state { min-height: 190px; }
             .preview-empty,
-            .st-key-preview_panel div[data-testid="stImage"] { height: 190px !important; }
+            .preview-image-box { height: 190px !important; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -728,6 +720,15 @@ def inject_apple_style():
         """,
         unsafe_allow_html=True,
     )
+
+
+def image_to_data_uri(image: Image.Image) -> str:
+    """Convert a PIL image to a PNG data URI for precise centered preview rendering."""
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+    return f"data:image/png;base64,{encoded}"
+
 
 def render_result(result: dict):
     """Display the story first, then narration, description, and downloads."""
@@ -867,7 +868,13 @@ def main():
     with preview_col:
         with st.container(border=False, key="preview_panel"):
             if image is not None:
-                st.image(image, width="stretch")
+                preview_uri = image_to_data_uri(image)
+                st.markdown(
+                    f'<div class="preview-image-box">'
+                    f'<img src="{preview_uri}" alt="Uploaded image preview">'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
             else:
                 st.markdown(
                     '<div class="preview-empty" aria-label="Image preview area"></div>',
