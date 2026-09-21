@@ -290,7 +290,7 @@ def inject_apple_style():
         }
         .hero h1 {
             margin: 0 0 .9rem;
-            font-size: clamp(3.15rem, 7.2vw, 6.2rem);
+            font-size: clamp(2.205rem, 5.04vw, 4.34rem);
             line-height: .95;
             letter-spacing: -.07em;
             font-weight: 720;
@@ -306,7 +306,7 @@ def inject_apple_style():
             max-width: 690px;
             margin: 0 auto;
             color: var(--muted) !important;
-            font-size: clamp(1.05rem, 2vw, 1.3rem);
+            font-size: clamp(.735rem, 1.4vw, .91rem);
             line-height: 1.45;
             letter-spacing: -.025em;
         }
@@ -323,7 +323,7 @@ def inject_apple_style():
             background: rgba(255,255,255,.055);
             border: 1px solid rgba(255,255,255,.08);
             color: #c7c7cc !important;
-            font-size: .78rem;
+            font-size: .546rem;
             font-weight: 650;
             box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
         }
@@ -367,7 +367,7 @@ def inject_apple_style():
 
         .section-kicker {
             color: #92929a !important;
-            font-size: .72rem;
+            font-size: .504rem;
             font-weight: 760;
             letter-spacing: .1em;
             text-transform: uppercase;
@@ -375,7 +375,7 @@ def inject_apple_style():
         }
         .section-title {
             color: #f5f5f7 !important;
-            font-size: clamp(1.72rem, 2.9vw, 2.35rem);
+            font-size: clamp(1.204rem, 2.03vw, 1.645rem);
             font-weight: 710;
             letter-spacing: -.045em;
             line-height: 1.06;
@@ -383,13 +383,13 @@ def inject_apple_style():
         }
         .section-copy {
             color: #aaaab1 !important;
-            font-size: .95rem;
+            font-size: .665rem;
             line-height: 1.46;
             margin-bottom: 1rem;
         }
         .control-heading {
             color: #f5f5f7 !important;
-            font-size: 1rem;
+            font-size: .7rem;
             font-weight: 720;
             letter-spacing: -.02em;
             margin: 0 0 .45rem;
@@ -434,6 +434,22 @@ def inject_apple_style():
             box-shadow: 0 5px 18px rgba(0,0,0,.18) !important;
         }
         [data-testid="stFileUploaderDropzone"] button p { color: #f5f5f7 !important; }
+
+
+        /* Streamlit-native text: ~30% smaller, control dimensions unchanged. */
+        .stButton > button,
+        .stDownloadButton > button {
+            font-size: .7rem !important;
+        }
+        [data-baseweb="select"] span,
+        [data-testid="stFileUploaderDropzoneInstructions"],
+        [data-testid="stFileUploaderDropzoneInstructions"] small,
+        [data-testid="stCaptionContainer"],
+        [data-testid="stExpander"] summary,
+        [data-testid="stAlert"],
+        [data-testid="stProgress"] {
+            font-size: .7rem !important;
+        }
 
         [data-baseweb="select"] > div {
             border-radius: 16px !important;
@@ -514,7 +530,7 @@ def inject_apple_style():
             background: rgba(255,255,255,.045);
         }
         .story-text {
-            font-size: .9rem;
+            font-size: .63rem;
             line-height: 1.42;
             letter-spacing: -.01em;
             color: #f5f5f7 !important;
@@ -529,7 +545,7 @@ def inject_apple_style():
             background: rgba(255,255,255,.06);
             border: 1px solid rgba(255,255,255,.08);
             color: #9f9fa7 !important;
-            font-size: .7rem;
+            font-size: .49rem;
             font-weight: 650;
         }
 
@@ -559,20 +575,20 @@ def inject_apple_style():
             display: grid;
             place-items: center;
             color: #f5f5f7 !important;
-            font-size: 1.35rem;
+            font-size: .945rem;
             margin-bottom: .55rem;
             animation: float 4s ease-in-out infinite;
         }
         .empty-state strong {
             color: #f5f5f7 !important;
-            font-size: 1rem;
+            font-size: .7rem;
             letter-spacing: -.025em;
         }
         .empty-state p {
             max-width: 360px;
             margin: .25rem auto 0;
             color: #a1a1a6 !important;
-            font-size: .8rem;
+            font-size: .56rem;
             line-height: 1.35;
         }
         .preview-empty {
@@ -598,7 +614,7 @@ def inject_apple_style():
         .footer-note {
             text-align: center;
             color: #7f7f86 !important;
-            font-size: .78rem;
+            font-size: .546rem;
             padding-top: 2.4rem;
         }
 
