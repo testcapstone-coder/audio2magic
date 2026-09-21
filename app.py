@@ -26,10 +26,11 @@ FLORENCE_TASK = "<MORE_DETAILED_CAPTION>"
 STORY_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"
 NARRATION_SPEED = 0.95
 VOICE_OPTIONS = {
+    "🧙 Michael — American Male": "am_michael",
     "🧚 Bella — Warm American": "af_bella",
     "💖 Heart — Friendly American": "af_heart",
     "🇬🇧 Emma — British": "bf_emma",
-    "🧙 Michael — American Male": "am_michael",
+    
 }
 LOGGER = logging.getLogger(__name__)
 SYSTEM_PROMPT = (
@@ -742,7 +743,7 @@ def image_to_data_uri(image: Image.Image) -> str:
 
 
 def render_result(result: dict):
-    """Display the story first, then narration, description, and downloads."""
+    """Display the generated story, narration, and download actions."""
     story = result.get("story")
     audio = result.get("audio")
 
@@ -758,11 +759,6 @@ def render_result(result: dict):
         narrator = next(name for name, voice in VOICE_OPTIONS.items() if voice == result["voice"])
         st.caption(f"Narrated by {narrator}")
         st.audio(audio, format="audio/wav")
-
-    # Show the detailed image description only after a story has been generated.
-    if story and result.get("description"):
-        with st.expander("Detailed image description"):
-            st.write(result["description"])
 
     if story:
         if audio:
@@ -892,6 +888,9 @@ def main():
                     unsafe_allow_html=True,
                 )
 
+        # Filled only once a story has been generated, so the description appears under the preview.
+        description_slot = st.empty()
+
     with story_col:
         with st.container(border=True, key="story_panel"):
             st.markdown(
@@ -934,6 +933,12 @@ def main():
             result = st.session_state.get("result")
             if result:
                 render_result(result)
+
+                if result.get("story") and result.get("description"):
+                    with description_slot.container():
+                        with st.expander("Detailed image description"):
+                            st.write(result["description"])
+
                 if selected_voice != result["voice"]:
                     st.info("Click Create My Story to make a new story with your chosen storyteller.")
             elif not create_clicked:
