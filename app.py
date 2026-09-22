@@ -1,3 +1,6 @@
+# Magic Story Maker
+# Copyright (c) 2026 - P025 - ISOM5240
+# Licensed under the GNU General Public License v3.0.
 """ISOM5240: Florence image description → SmolLM2 story → Kokoro narration."""
 import base64
 import gc
@@ -312,12 +315,12 @@ def inject_apple_style():
         .hero {
             text-align: center;
             max-width: 920px;
-            margin: 1.1rem auto 2.4rem;
+            margin: .5rem auto 1.25rem;
             animation: rise .7s cubic-bezier(.2,.75,.2,1) both;
         }
         .hero h1 {
             margin: 0 0 .9rem;
-            font-size: clamp(2.2rem, 5.05vw, 4.35rem);
+            font-size: clamp(1.9rem, 3.6vw, 3rem);
             line-height: .95;
             letter-spacing: -.07em;
             font-weight: 720;
@@ -338,7 +341,7 @@ def inject_apple_style():
             letter-spacing: -.025em;
         }
         .flow-pills {
-            margin-top: 1.4rem;
+            margin-top: .8rem;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
@@ -382,8 +385,11 @@ def inject_apple_style():
         }
 
         /* Balance Preview and Your Story as one clean product-style row. */
+        .st-key-story_panel,
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
-            background: linear-gradient(180deg, rgba(18,18,22,.98), rgba(12,12,16,.98)) !important;
+            background: linear-gradient(145deg, #123d38, #102a2b) !important;
+            border: 1px solid rgba(94,234,212,.38) !important;
+            border-radius: 24px;
             min-height: 435px;
         }
         .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] > div {
@@ -667,14 +673,6 @@ def inject_apple_style():
             font-size: .82rem !important;
             line-height: 1.42 !important;
         }
-        .st-key-description_panel .description-text {
-            margin: 0 !important;
-            font-size: .82rem !important;
-            line-height: 1.42 !important;
-            font-weight: 400 !important;
-            color: #d8d8de !important;
-            white-space: pre-wrap;
-        }
         [data-testid="stAlert"] {
             border-radius: 18px !important;
             border: 1px solid rgba(255,255,255,.08) !important;
@@ -809,7 +807,7 @@ def inject_apple_style():
 
         @media (max-width: 800px) {
             .block-container { padding-left: 1rem; padding-right: 1rem; }
-            .hero { margin: .7rem auto 1.8rem; }
+            .hero { margin: .4rem auto 1.1rem; }
             .hero h1 { letter-spacing: -.055em; }
             div[data-testid="stVerticalBlockBorderWrapper"] { border-radius: 24px !important; }
             .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"],
@@ -830,6 +828,20 @@ def inject_apple_style():
                 scroll-behavior: auto !important;
             }
         }
+        /* Keep disabled actions unmistakably inactive, including on hover. */
+        .st-key-create_story button:disabled,
+        .st-key-create_story button:disabled:hover {
+            background: #303039 !important;
+            color: #b7b7bf !important;
+            border: 1px solid #494952 !important;
+            box-shadow: none !important;
+            transform: none !important;
+            filter: none !important;
+            cursor: not-allowed !important;
+            opacity: 1 !important;
+        }
+        .st-key-create_story button:disabled p { color: #b7b7bf !important; }
+        .st-key-story_panel .story-text { color: #e4fff7 !important; }
         </style>
         """,
         unsafe_allow_html=True,
@@ -906,7 +918,7 @@ def main():
         """
         <section class="hero">
             <h1>One picture.<br><span class="hero-gradient">A whole new story.</span></h1>
-            <p>Upload an image and watch it become a warm, playful adventure you can read and hear.</p>
+            <p>Upload an image and watch it become a warm adventure you can read and hear.</p>
             <div class="flow-pills">
                 <span>1 · Upload</span>
                 <span>2 · Imagine</span>
@@ -978,6 +990,8 @@ def main():
             use_container_width=False,
             key="create_story",
         )
+        if image is None:
+            st.caption("Upload a picture to begin.")
 
     # Preview and story start on the same horizontal line.
     preview_col, story_col = st.columns(2, gap="large")
@@ -1045,21 +1059,38 @@ def main():
 
             result = st.session_state.get("result")
             if result:
+                # A completed story is enough: allow recovery if first narration failed.
+                # Commit the replacement voice/audio together only after success.
+                if result.get("story"):
+                    retry_clicked = st.button(
+                        "Retry narration", key="retry_narration",
+                        help="Create new audio for this same story using the selected storyteller.",
+                    )
+                    if retry_clicked:
+                        retry_progress = st.progress(0, text="Creating narration for your saved story…")
+                        try:
+                            with st.spinner("Creating narration… Your story stays the same."):
+                                with inference_lock():
+                                    new_audio = run_stage(generate_audio, result["story"], selected_voice)
+                            result.update(audio=new_audio, voice=selected_voice)
+                            st.session_state["result"] = result
+                            retry_progress.progress(100, text="Narration is ready.")
+                        except Exception as exc:
+                            LOGGER.exception("Narration retry failed")
+                            retry_progress.empty()
+                            st.error("Narration could not be created. Your story and any previous audio are saved.")
+                            with st.expander("Technical details"):
+                                st.text(str(exc))
                 render_result(result)
 
                 if result.get("story") and result.get("description"):
                     with description_slot.container():
                         with st.container(key="description_panel"):
                             with st.expander("Detailed image description"):
-                                st.markdown(
-                                    f'<div class="description-text">'
-                                    f'{html.escape(result["description"])}'
-                                    f'</div>',
-                                    unsafe_allow_html=True,
-                                )
+                                st.write(result["description"])
 
-                if selected_voice != result["voice"]:
-                    st.info("Click Create My Story to make a new story with your chosen storyteller.")
+                if result.get("story") and selected_voice != result["voice"]:
+                    st.info("Click Retry narration to hear this story with your chosen storyteller.")
             elif not create_clicked:
                 st.markdown(
                     """
@@ -1073,7 +1104,7 @@ def main():
                 )
 
     st.markdown(
-        '<div class="footer-note">Built with Hugging Face models · Designed for ages 3–10</div>',
+        '<div class="footer-note">P025 -  ISOM5240</div>',
         unsafe_allow_html=True,
     )
 
