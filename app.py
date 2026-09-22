@@ -842,6 +842,26 @@ def inject_apple_style():
         }
         .st-key-create_story button:disabled p { color: #b7b7bf !important; }
         .st-key-story_panel .story-text { color: #e4fff7 !important; }
+        .st-key-retry_narration button:not(:disabled) {
+            background: #0f766e !important;
+            border: 1px solid #5eead4 !important;
+            color: #ffffff !important;
+            box-shadow: 0 5px 16px rgba(20,184,166,.18) !important;
+        }
+        .st-key-retry_narration button:not(:disabled):hover {
+            background: #115e59 !important;
+        }
+        .st-key-retry_narration button:disabled,
+        .st-key-retry_narration button:disabled:hover {
+            background: #303039 !important;
+            border: 1px solid #494952 !important;
+            color: #b7b7bf !important;
+            box-shadow: none !important;
+            transform: none !important;
+            filter: none !important;
+            cursor: not-allowed !important;
+        }
+        .st-key-retry_narration button:disabled p { color: #b7b7bf !important; }
         </style>
         """,
         unsafe_allow_html=True,
@@ -865,7 +885,6 @@ def render_story(result: dict):
             f'<span class="word-chip">{word_count(story)} words</span></div>',
             unsafe_allow_html=True,
         )
-        st.download_button("Download story", story, "my-story.txt", "text/plain", key="download_story")
 
 
 def render_narration(result: dict, selected_voice: str, refresh: bool):
@@ -882,6 +901,8 @@ def render_narration(result: dict, selected_voice: str, refresh: bool):
             result.update(audio=audio, voice=selected_voice)
             st.session_state["result"] = result
             progress.progress(100, text="Your narration is ready.")
+            # Reflect the newly active voice in the button's disabled state.
+            st.rerun()
         except Exception as exc:
             LOGGER.exception("Narration retry failed")
             progress.empty()
@@ -892,10 +913,6 @@ def render_narration(result: dict, selected_voice: str, refresh: bool):
         narrator = next(name for name, voice in VOICE_OPTIONS.items() if voice == result["voice"])
         st.caption(f"Narrated by {narrator}")
         st.audio(result["audio"], format="audio/wav")
-        st.download_button(
-            "Download narration", result["audio"], "my-story.wav", "audio/wav",
-            key="download_narration", use_container_width=True,
-        )
     else:
         st.caption("Choose a storyteller above and click Hear this story in another voice to create narration.")
 
@@ -935,7 +952,6 @@ def main():
                 """
                 <div class="section-kicker">Step 1</div>
                 <div class="section-title">Upload Your Picture</div>
-                <div class="section-copy">Choose a JPG or PNG. Clear, colorful images work best.</div>
                 """,
                 unsafe_allow_html=True,
             )
@@ -951,7 +967,6 @@ def main():
                 """
                 <div class="section-kicker">Step 2</div>
                 <div class="section-title">Choose Your Storyteller</div>
-                <div class="section-copy">Pick the voice that will narrate your finished story.</div>
                 """,
                 unsafe_allow_html=True,
             )
@@ -1061,6 +1076,7 @@ def main():
                 if result.get("story"):
                     refresh_audio = voice_action_slot.button(
                         "Hear this story in another voice", key="retry_narration",
+                        disabled=selected_voice == result.get("voice"),
                         help="Choose a storyteller above, then create fresh narration without changing the story.",
                     )
                 # Text is already on screen. Only this region performs audio work.
@@ -1075,6 +1091,19 @@ def main():
 
                 if result.get("story") and selected_voice != result["voice"]:
                     st.info("Choose “Hear this story in another voice” below the voice list to use your selected storyteller.")
+                if result.get("story"):
+                    story_download_col, audio_download_col = st.columns(2, gap="small")
+                    with story_download_col:
+                        st.download_button(
+                            "Download story", result["story"], "my-story.txt", "text/plain",
+                            key="download_story", use_container_width=True,
+                        )
+                    with audio_download_col:
+                        st.download_button(
+                            "Download narration", result.get("audio", b""), "my-story.wav", "audio/wav",
+                            key="download_narration", disabled=not result.get("audio"),
+                            use_container_width=True,
+                        )
             elif not create_clicked:
                 st.markdown(
                     """
