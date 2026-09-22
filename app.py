@@ -934,7 +934,7 @@ def render_narration(result: dict, selected_voice: str, refresh: bool):
         st.caption(f"Narrated by {narrator}")
         st.audio(result["audio"], format="audio/wav")
     else:
-        st.caption("Choose a storyteller above and click Hear this story in another voice to create narration.")
+        st.caption("Choose a storyteller above, then use the button to create narration in that voice.")
 
 
 def main():
@@ -1106,7 +1106,7 @@ def main():
                 if result.get("story"):
                     # Voice changes regenerate only narration; the grounded story remains unchanged.
                     refresh_audio = voice_action_slot.button(
-                        "Hear this story in another voice", key="retry_narration",
+                        "🎙️ Want another storyteller? Pick a voice and hit me!", key="retry_narration",
                         disabled=selected_voice == result.get("voice"),
                         help="Choose a storyteller above, then create fresh narration without changing the story.",
                     )
