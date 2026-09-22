@@ -508,6 +508,21 @@ def inject_kid_friendly_style():
             color: var(--muted) !important;
         }
 
+        /*
+         * Contrast safeguards.
+         * Streamlit/BaseWeb can render some widget text in a portal outside .stApp and
+         * may inherit the active browser/theme foreground color. Explicit colors here
+         * keep labels readable on our light surfaces in both light and dark OS themes.
+         */
+        [data-testid="stFileUploaderDropzoneInstructions"],
+        [data-testid="stFileUploaderDropzoneInstructions"] *,
+        [data-testid="stFileUploaderFileData"],
+        [data-testid="stFileUploaderFileData"] * {
+            color: #514a70 !important;
+            -webkit-text-fill-color: #514a70 !important;
+            opacity: 1 !important;
+        }
+
         /* Large touch targets make upload and voice selection easier for small hands. */
         [data-testid="stFileUploaderDropzone"] {
             min-height: 3.5rem !important;
@@ -609,15 +624,59 @@ def inject_kid_friendly_style():
             border-color: rgba(117,88,232,.62) !important;
             box-shadow: 0 0 0 4px rgba(117,88,232,.10) !important;
         }
-        [data-baseweb="select"] * { color: var(--ink) !important; }
-        [data-baseweb="popover"] { color: var(--ink) !important; }
+        [data-baseweb="select"] *,
+        [data-baseweb="select"] input,
+        [data-baseweb="select"] svg {
+            color: var(--ink) !important;
+            -webkit-text-fill-color: var(--ink) !important;
+            opacity: 1 !important;
+        }
+
+        /*
+         * The select menu is rendered by BaseWeb in a portal, so it does not always
+         * inherit the app's light palette. Force a light menu and high-contrast text
+         * so every storyteller remains readable regardless of Streamlit/OS theme.
+         */
+        [data-baseweb="popover"],
+        [data-baseweb="popover"] > div,
+        [data-baseweb="popover"] [data-baseweb="menu"],
+        [data-baseweb="popover"] [role="listbox"],
+        [data-baseweb="menu"],
         [role="listbox"] {
             background: #ffffff !important;
-            border: 1px solid rgba(117,88,232,.16) !important;
-            border-radius: 16px !important;
-            box-shadow: 0 14px 34px rgba(57,42,115,.14) !important;
+            background-color: #ffffff !important;
+            color: var(--ink) !important;
+            -webkit-text-fill-color: var(--ink) !important;
         }
-        [role="option"] { color: var(--ink) !important; font-weight: 600 !important; }
+        [data-baseweb="popover"] [role="listbox"],
+        [role="listbox"] {
+            border: 1px solid rgba(117,88,232,.18) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 14px 34px rgba(57,42,115,.16) !important;
+            overflow: hidden !important;
+        }
+        [data-baseweb="popover"] [role="option"],
+        [role="listbox"] [role="option"] {
+            background: #ffffff !important;
+            color: var(--ink) !important;
+            -webkit-text-fill-color: var(--ink) !important;
+            font-weight: 650 !important;
+            opacity: 1 !important;
+        }
+        [data-baseweb="popover"] [role="option"] *,
+        [role="listbox"] [role="option"] * {
+            color: var(--ink) !important;
+            -webkit-text-fill-color: var(--ink) !important;
+            opacity: 1 !important;
+        }
+        [data-baseweb="popover"] [role="option"]:hover,
+        [role="listbox"] [role="option"]:hover {
+            background: #f5f1ff !important;
+        }
+        [data-baseweb="popover"] [role="option"][aria-selected="true"],
+        [role="listbox"] [role="option"][aria-selected="true"] {
+            background: #eee9ff !important;
+        }
 
         .stButton > button,
         .stDownloadButton > button {
