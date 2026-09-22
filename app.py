@@ -938,6 +938,19 @@ def render_narration(result: dict, selected_voice: str, refresh: bool):
         st.caption("Choose a storyteller above, then use the button to create narration in that voice.")
 
 
+
+def request_narration_refresh():
+    """Lock the narration action immediately and queue one audio refresh."""
+    st.session_state["narration_button_locked"] = True
+    st.session_state["narration_refresh_requested"] = True
+
+
+def unlock_narration_action():
+    """Re-enable narration generation when the user chooses a different voice."""
+    st.session_state["narration_button_locked"] = False
+    st.session_state["narration_refresh_requested"] = False
+
+
 def main():
     """Build the Streamlit interface and orchestrate the three inference stages."""
     st.set_page_config(
@@ -1002,6 +1015,8 @@ def main():
                 voice_names,
                 index=default_voice_index,
                 label_visibility="collapsed",
+                key="storyteller_select",
+                on_change=unlock_narration_action,
             )
             selected_voice = VOICE_OPTIONS[selected_name]
             # Filled later, after checking the current image and saved story.
@@ -1013,6 +1028,8 @@ def main():
         if st.session_state.get("image_id") != image_id:
             st.session_state["image_id"] = image_id
             st.session_state.pop("result", None)
+            st.session_state.pop("narration_button_locked", None)
+            st.session_state.pop("narration_refresh_requested", None)
 
         if uploaded is not None:
             try:
@@ -1070,6 +1087,8 @@ def main():
                 # A new run replaces the previous result progressively: description -> story -> audio.
                 # Saving after each completed stage means useful text survives a later failure.
                 st.session_state.pop("result", None)
+                st.session_state["narration_button_locked"] = False
+                st.session_state["narration_refresh_requested"] = False
                 progress = st.progress(0, text="Looking closely at your picture…")
                 preview = st.empty()
                 try:
@@ -1105,11 +1124,22 @@ def main():
                 render_story(result)
                 refresh_audio = False
                 if result.get("story"):
-                    # Voice changes regenerate only narration; the grounded story remains unchanged.
-                    refresh_audio = voice_action_slot.button(
-                        "🎙️ Want another storyteller? Pick a voice and hit me!", key="retry_narration",
-                        disabled=selected_voice == result.get("voice"),
+                    # Lock immediately after a click to prevent duplicate narration requests.
+                    # Changing the storyteller unlocks the action again.
+                    voice_action_slot.button(
+                        "🎙️ Want another storyteller? Pick a voice and hit me!",
+                        key="retry_narration",
+                        disabled=(
+                            selected_voice == result.get("voice")
+                            or st.session_state.get("narration_button_locked", False)
+                        ),
                         help="Choose a storyteller above, then create fresh narration without changing the story.",
+                        on_click=request_narration_refresh,
+                    )
+                    # The callback runs before this rerun, so the button is already disabled
+                    # while the queued audio generation is being processed.
+                    refresh_audio = st.session_state.pop(
+                        "narration_refresh_requested", False
                     )
                 # Text is already on screen. Only this region performs audio work.
                 with st.container(key="narration_panel"):
