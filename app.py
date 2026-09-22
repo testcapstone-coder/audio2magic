@@ -738,11 +738,23 @@ def inject_kid_friendly_style(theme: str = "light"):
         .stButton > button p,
         .stDownloadButton > button p { font-size: .95rem !important; }
 
-        /* Compact theme switcher: secondary to the storytelling flow but easy to find. */
+        /* Keep the theme switch beside the rainbow decoration in the hero. */
+        .st-key-hero_wrap {
+            position: relative !important;
+        }
+        .st-key-hero_wrap .st-key-theme_toggle {
+            position: absolute !important;
+            top: 1.15rem !important;
+            right: .15rem !important;
+            z-index: 20 !important;
+            width: auto !important;
+        }
+        .st-key-theme_toggle .stButton { width: auto !important; }
         .st-key-theme_toggle .stButton > button {
-            min-height: 2.55rem !important;
-            padding: .38rem .78rem !important;
-            background: rgba(255,255,255,.88) !important;
+            min-height: 2.45rem !important;
+            width: auto !important;
+            padding: .34rem .72rem !important;
+            background: rgba(255,255,255,.90) !important;
             border: 1px solid rgba(117,88,232,.20) !important;
             color: #514a70 !important;
             -webkit-text-fill-color: #514a70 !important;
@@ -758,6 +770,38 @@ def inject_kid_friendly_style(theme: str = "light"):
         .st-key-theme_toggle .stButton > button:hover {
             background: #f3efff !important;
             border-color: rgba(117,88,232,.40) !important;
+        }
+
+        @media (max-width: 900px) {
+            /* On smaller screens keep the switch clear of the headline. */
+            .st-key-hero_wrap .st-key-theme_toggle {
+                top: .65rem !important;
+                right: .35rem !important;
+            }
+            .hero::after {
+                right: 7.1rem !important;
+                top: 10% !important;
+            }
+            .st-key-theme_toggle .stButton > button {
+                min-height: 2.25rem !important;
+                padding: .28rem .58rem !important;
+            }
+            .st-key-theme_toggle .stButton > button p {
+                font-size: .78rem !important;
+            }
+        }
+
+        @media (max-width: 620px) {
+            /* Preserve readability on phones: keep both controls in the hero's top-right corner. */
+            .hero { padding-top: 3.15rem !important; }
+            .hero::after {
+                right: 7rem !important;
+                top: .58rem !important;
+            }
+            .st-key-hero_wrap .st-key-theme_toggle {
+                top: .38rem !important;
+                right: .35rem !important;
+            }
         }
 
         /* Main creation action is intentionally large and centered. */
@@ -1490,32 +1534,30 @@ def main():
     theme = st.session_state.setdefault("ui_theme", "light")
     inject_kid_friendly_style(theme)
 
-    # Light mode is the default. The switch only changes presentation; story/image state is preserved.
-    _, theme_col = st.columns([7.0, 1.25])
-    with theme_col:
+    # Keep the theme control visually attached to the rainbow in the hero.
+    # The switch changes only presentation; uploaded images and generated content are preserved.
+    with st.container(key="hero_wrap"):
+        st.markdown(
+            """
+            <section class="hero">
+                <div class="magic-badge">🪄 Magic Story Maker</div>
+                <h1>Turn a picture into<br><span class="hero-gradient">your own magical story!</span></h1>
+                <p>Pick a picture, choose your storyteller, and make a story you can read and hear.</p>
+                <div class="flow-pills">
+                    <span>🖼️ 1 · Pick a picture</span>
+                    <span>🎙️ 2 · Pick a voice</span>
+                    <span>✨ 3 · Make the magic</span>
+                </div>
+            </section>
+            """,
+            unsafe_allow_html=True,
+        )
         st.button(
             "🌙 Dark mode" if theme == "light" else "☀️ Light mode",
             key="theme_toggle",
-            use_container_width=True,
             help="Switch the app colors without changing your picture or story.",
             on_click=toggle_theme,
         )
-
-    st.markdown(
-        """
-        <section class="hero">
-            <div class="magic-badge">🪄 Magic Story Maker</div>
-            <h1>Turn a picture into<br><span class="hero-gradient">your own magical story!</span></h1>
-            <p>Pick a picture, choose your storyteller, and make a story you can read and hear.</p>
-            <div class="flow-pills">
-                <span>🖼️ 1 · Pick a picture</span>
-                <span>🎙️ 2 · Pick a voice</span>
-                <span>✨ 3 · Make the magic</span>
-            </div>
-        </section>
-        """,
-        unsafe_allow_html=True,
-    )
 
     # The decoded PIL image exists only for the current Streamlit rerun.
     image = None
