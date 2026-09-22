@@ -320,7 +320,7 @@ def inject_apple_style():
         }
         .hero h1 {
             margin: 0 0 .9rem;
-            font-size: clamp(1.9rem, 3.6vw, 3rem);
+            font-size: clamp(2.4rem, 5.2vw, 4.5rem);
             line-height: .95;
             letter-spacing: -.07em;
             font-weight: 720;
@@ -1004,7 +1004,8 @@ def main():
             use_container_width=False,
             key="create_story",
         )
-
+        if image is None:
+            st.caption("Upload a picture to begin.")
 
     # Preview and story start on the same horizontal line.
     preview_col, story_col = st.columns(2, gap="large")
@@ -1090,8 +1091,6 @@ def main():
                             with st.expander("Detailed image description"):
                                 st.write(result["description"])
 
-                if result.get("story") and selected_voice != result["voice"]:
-                    st.info("Choose another voice and, click on “Hear this story in another voice” to use your selected storyteller.")
                 if result.get("story"):
                     story_download_col, audio_download_col = st.columns(2, gap="small")
                     with story_download_col:
