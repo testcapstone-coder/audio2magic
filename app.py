@@ -738,14 +738,15 @@ def inject_kid_friendly_style(theme: str = "light"):
         .stButton > button p,
         .stDownloadButton > button p { font-size: .95rem !important; }
 
-        /* Keep the theme switch beside the rainbow decoration in the hero. */
+        /* Place the compact theme switch just to the left of the hero star. */
         .st-key-hero_wrap {
             position: relative !important;
         }
         .st-key-hero_wrap .st-key-theme_toggle {
             position: absolute !important;
             top: 1.15rem !important;
-            right: .15rem !important;
+            left: calc(50% - 460px + 1rem) !important;
+            transform: translateX(-100%) !important;
             z-index: 20 !important;
             width: auto !important;
         }
@@ -772,14 +773,16 @@ def inject_kid_friendly_style(theme: str = "light"):
             border-color: rgba(117,88,232,.40) !important;
         }
 
-        @media (max-width: 900px) {
-            /* On smaller screens keep the switch clear of the headline. */
+        @media (max-width: 1100px) {
+            /* Keep the switch immediately to the left of the star on narrower screens. */
             .st-key-hero_wrap .st-key-theme_toggle {
                 top: .65rem !important;
-                right: .35rem !important;
+                left: .35rem !important;
+                right: auto !important;
+                transform: none !important;
             }
-            .hero::after {
-                right: 7.1rem !important;
+            .hero::before {
+                left: 5.7rem !important;
                 top: 10% !important;
             }
             .st-key-theme_toggle .stButton > button {
@@ -792,15 +795,21 @@ def inject_kid_friendly_style(theme: str = "light"):
         }
 
         @media (max-width: 620px) {
-            /* Preserve readability on phones: keep both controls in the hero's top-right corner. */
+            /* Give the compact theme control and star their own row above the headline. */
             .hero { padding-top: 3.15rem !important; }
+            .hero::before {
+                left: 5.4rem !important;
+                top: .58rem !important;
+            }
             .hero::after {
-                right: 7rem !important;
+                right: .75rem !important;
                 top: .58rem !important;
             }
             .st-key-hero_wrap .st-key-theme_toggle {
                 top: .38rem !important;
-                right: .35rem !important;
+                left: .35rem !important;
+                right: auto !important;
+                transform: none !important;
             }
         }
 
@@ -1534,7 +1543,7 @@ def main():
     theme = st.session_state.setdefault("ui_theme", "light")
     inject_kid_friendly_style(theme)
 
-    # Keep the theme control visually attached to the rainbow in the hero.
+    # Keep the compact theme control beside the star in the hero.
     # The switch changes only presentation; uploaded images and generated content are preserved.
     with st.container(key="hero_wrap"):
         st.markdown(
@@ -1553,7 +1562,7 @@ def main():
             unsafe_allow_html=True,
         )
         st.button(
-            "🌙 Dark mode" if theme == "light" else "☀️ Light mode",
+            "🌙 Dark" if theme == "light" else "☀️ Light",
             key="theme_toggle",
             help="Switch the app colors without changing your picture or story.",
             on_click=toggle_theme,
