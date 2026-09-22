@@ -856,53 +856,48 @@ def image_to_data_uri(image: Image.Image) -> str:
     return f"data:image/png;base64,{encoded}"
 
 
-def render_result(result: dict):
-    """Display the generated story, narration, and download actions."""
+def render_story(result: dict):
+    """Render saved text before any potentially slow audio work."""
     story = result.get("story")
-    audio = result.get("audio")
-
     if story:
         st.markdown(
             f'<div class="story-shell"><div class="story-text">{html.escape(story)}</div>'
             f'<span class="word-chip">{word_count(story)} words</span></div>',
             unsafe_allow_html=True,
         )
+        st.download_button("Download story", story, "my-story.txt", "text/plain", key="download_story")
 
-    if audio:
-        st.markdown("### Listen to your story")
+
+def render_narration(result: dict, selected_voice: str, refresh: bool):
+    """Refresh only the audio region; commit new audio/voice together on success."""
+    if not result.get("story"):
+        return
+    st.markdown("### Listen to your story")
+    if refresh:
+        progress = st.progress(0, text="Creating your chosen voice…")
+        try:
+            with st.spinner("Giving your story a new voice…"):
+                with inference_lock():
+                    audio = run_stage(generate_audio, result["story"], selected_voice)
+            result.update(audio=audio, voice=selected_voice)
+            st.session_state["result"] = result
+            progress.progress(100, text="Your narration is ready.")
+        except Exception as exc:
+            LOGGER.exception("Narration retry failed")
+            progress.empty()
+            st.error("We couldn't create that narration. Your story and any previous audio are saved.")
+            with st.expander("Technical details"):
+                st.text(str(exc))
+    if result.get("audio"):
         narrator = next(name for name, voice in VOICE_OPTIONS.items() if voice == result["voice"])
         st.caption(f"Narrated by {narrator}")
-        st.audio(audio, format="audio/wav")
-
-    if story:
-        if audio:
-            story_download_col, audio_download_col = st.columns(2, gap="small")
-            with story_download_col:
-                st.download_button(
-                    "Download story",
-                    story,
-                    "my-story.txt",
-                    "text/plain",
-                    key="download_story",
-                    use_container_width=True,
-                )
-            with audio_download_col:
-                st.download_button(
-                    "Download narration",
-                    audio,
-                    "my-story.wav",
-                    "audio/wav",
-                    key="download_narration",
-                    use_container_width=True,
-                )
-        else:
-            st.download_button(
-                "Download story",
-                story,
-                "my-story.txt",
-                "text/plain",
-                key="download_story",
-            )
+        st.audio(result["audio"], format="audio/wav")
+        st.download_button(
+            "Download narration", result["audio"], "my-story.wav", "audio/wav",
+            key="download_narration", use_container_width=True,
+        )
+    else:
+        st.caption("Choose a storyteller above and click Hear this story in another voice to create narration.")
 
 
 def main():
@@ -969,6 +964,8 @@ def main():
                 label_visibility="collapsed",
             )
             selected_voice = VOICE_OPTIONS[selected_name]
+            # Filled later, after checking the current image and saved story.
+            voice_action_slot = st.empty()
 
         image_id = hashlib.sha256(uploaded.getvalue()).hexdigest() if uploaded else None
         if st.session_state.get("image_id") != image_id:
@@ -1059,29 +1056,16 @@ def main():
 
             result = st.session_state.get("result")
             if result:
-                # A completed story is enough: allow recovery if first narration failed.
-                # Commit the replacement voice/audio together only after success.
+                render_story(result)
+                refresh_audio = False
                 if result.get("story"):
-                    retry_clicked = st.button(
-                        "Retry narration", key="retry_narration",
-                        help="Create new audio for this same story using the selected storyteller.",
+                    refresh_audio = voice_action_slot.button(
+                        "Hear this story in another voice", key="retry_narration",
+                        help="Choose a storyteller above, then create fresh narration without changing the story.",
                     )
-                    if retry_clicked:
-                        retry_progress = st.progress(0, text="Creating narration for your saved story…")
-                        try:
-                            with st.spinner("Creating narration… Your story stays the same."):
-                                with inference_lock():
-                                    new_audio = run_stage(generate_audio, result["story"], selected_voice)
-                            result.update(audio=new_audio, voice=selected_voice)
-                            st.session_state["result"] = result
-                            retry_progress.progress(100, text="Narration is ready.")
-                        except Exception as exc:
-                            LOGGER.exception("Narration retry failed")
-                            retry_progress.empty()
-                            st.error("Narration could not be created. Your story and any previous audio are saved.")
-                            with st.expander("Technical details"):
-                                st.text(str(exc))
-                render_result(result)
+                # Text is already on screen. Only this region performs audio work.
+                with st.container(key="narration_panel"):
+                    render_narration(result, selected_voice, refresh_audio)
 
                 if result.get("story") and result.get("description"):
                     with description_slot.container():
@@ -1090,7 +1074,7 @@ def main():
                                 st.write(result["description"])
 
                 if result.get("story") and selected_voice != result["voice"]:
-                    st.info("Click Retry narration to hear this story with your chosen storyteller.")
+                    st.info("Choose “Hear this story in another voice” below the voice list to use your selected storyteller.")
             elif not create_clicked:
                 st.markdown(
                     """
