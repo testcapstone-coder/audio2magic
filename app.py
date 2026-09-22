@@ -738,45 +738,57 @@ def inject_kid_friendly_style(theme: str = "light"):
         .stButton > button p,
         .stDownloadButton > button p { font-size: .95rem !important; }
 
-        /* Place the compact theme switch just to the left of the hero star. */
+        /* Place the compact theme switch just to the left of the hero star.
+         * A filled purple pill gives the control enough contrast to stay obvious
+         * against the pale hero background and avoids relying on Streamlit defaults.
+         */
         .st-key-hero_wrap {
             position: relative !important;
         }
         .st-key-hero_wrap .st-key-theme_toggle {
             position: absolute !important;
-            top: 1.15rem !important;
+            top: 2.05rem !important;
             left: calc(50% - 460px + 1rem) !important;
             transform: translateX(-100%) !important;
             z-index: 20 !important;
             width: auto !important;
         }
         .st-key-theme_toggle .stButton { width: auto !important; }
-        .st-key-theme_toggle .stButton > button {
+        .st-key-theme_toggle .stButton > button,
+        div.st-key-theme_toggle button,
+        [class*="st-key-theme_toggle"] button {
             min-height: 2.45rem !important;
             width: auto !important;
-            padding: .34rem .72rem !important;
-            background: rgba(255,255,255,.90) !important;
-            border: 1px solid rgba(117,88,232,.20) !important;
-            color: #514a70 !important;
-            -webkit-text-fill-color: #514a70 !important;
-            box-shadow: 0 6px 16px rgba(72,54,140,.08) !important;
+            padding: .34rem .78rem !important;
+            background: linear-gradient(135deg, #6b65ee 0%, #7b5ce8 55%, #9a5edc 100%) !important;
+            border: 1px solid rgba(92,71,196,.28) !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            box-shadow: 0 8px 20px rgba(87,67,184,.24) !important;
             white-space: nowrap !important;
+            opacity: 1 !important;
         }
-        .st-key-theme_toggle .stButton > button p {
-            color: #514a70 !important;
-            -webkit-text-fill-color: #514a70 !important;
-            font-size: .86rem !important;
-            font-weight: 760 !important;
+        .st-key-theme_toggle .stButton > button p,
+        div.st-key-theme_toggle button p,
+        [class*="st-key-theme_toggle"] button p {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            font-size: .88rem !important;
+            font-weight: 800 !important;
+            opacity: 1 !important;
         }
-        .st-key-theme_toggle .stButton > button:hover {
-            background: #f3efff !important;
-            border-color: rgba(117,88,232,.40) !important;
+        .st-key-theme_toggle .stButton > button:hover,
+        div.st-key-theme_toggle button:hover,
+        [class*="st-key-theme_toggle"] button:hover {
+            background: linear-gradient(135deg, #5f58df 0%, #704fdd 55%, #8d50d0 100%) !important;
+            border-color: rgba(92,71,196,.45) !important;
+            box-shadow: 0 10px 24px rgba(87,67,184,.30) !important;
         }
 
         @media (max-width: 1100px) {
             /* Keep the switch immediately to the left of the star on narrower screens. */
             .st-key-hero_wrap .st-key-theme_toggle {
-                top: .65rem !important;
+                top: 1.35rem !important;
                 left: .35rem !important;
                 right: auto !important;
                 transform: none !important;
@@ -806,7 +818,7 @@ def inject_kid_friendly_style(theme: str = "light"):
                 top: .58rem !important;
             }
             .st-key-hero_wrap .st-key-theme_toggle {
-                top: .38rem !important;
+                top: 1.05rem !important;
                 left: .35rem !important;
                 right: auto !important;
                 transform: none !important;
