@@ -1,7 +1,14 @@
 # Magic Story Maker
 # Copyright (c) 2026 - P025 - ISOM5240
 # Licensed under the GNU General Public License v3.0.
-"""ISOM5240: Florence image description → SmolLM2 story → Kokoro narration."""
+"""Magic Story Maker: image understanding -> story generation -> speech narration.
+
+The application is intentionally split into independent inference stages so each model can
+be released before the next CPU-heavy stage starts. This keeps memory usage suitable for
+small Streamlit Cloud instances while preserving a simple user experience.
+"""
+
+# Python standard library
 import base64
 import gc
 import ctypes
@@ -13,6 +20,7 @@ import logging
 import re
 from threading import RLock
 
+# Third-party libraries
 import numpy as np
 import soundfile as sf
 import spacy
@@ -22,12 +30,14 @@ from PIL import Image, ImageOps
 from kokoro import KModel, KPipeline
 from transformers import AutoModelForCausalLM, AutoProcessor, pipeline
 
-# Model configuration
+# -----------------------------------------------------------------------------
+# Model and generation configuration
+# -----------------------------------------------------------------------------
 CAPTION_MODEL = "microsoft/Florence-2-base"  # Image -> detailed image description
 STORY_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct"  # Image description -> children's story
 AUDIO_MODEL = "hexgrad/Kokoro-82M"  # Generated story -> spoken narration
 
-# Application configuration
+# Story, narration, and upload constraints shared by validation and the UI.
 MIN_STORY_WORDS = 50
 MAX_STORY_WORDS = 100
 TARGET_STORY_WORDS = 65
@@ -38,6 +48,7 @@ DEFAULT_VOICE = "am_michael"
 ALLOWED_IMAGE_TYPES = ["jpg", "jpeg", "png"]
 MAX_UPLOAD_MB = 20
 
+# Display label -> Kokoro voice identifier.
 VOICE_OPTIONS = {
     "🧚 Bella — Warm American": "af_bella",
     "🎙️ Nicole — American Female": "af_nicole",
@@ -46,7 +57,11 @@ VOICE_OPTIONS = {
     "🧙 Michael — American Male": "am_michael",
     "🪄 Puck — American Male": "am_puck",
 }
+
 LOGGER = logging.getLogger(__name__)
+
+# The system prompt keeps generated stories grounded in the uploaded image and
+# appropriate for the assignment's 3-10 year-old audience.
 SYSTEM_PROMPT = (
     "Write a warm, playful story for children aged 3–10 in simple English. "
     f"Use five short sentences, about 12–16 words each, totaling {MIN_STORY_WORDS}–{MAX_STORY_WORDS} words. "
@@ -139,11 +154,13 @@ def word_count(text: str) -> int:
 
 
 def clean_story(text: str) -> str:
+    """Remove common model preambles and normalize whitespace before validation."""
     text = re.sub(r"^\s*(?:story|here(?:'s| is) (?:your|the) story)\s*:\s*", "", text, flags=re.I)
     return " ".join(text.strip().split())
 
 
 def story_issue(story: str) -> str:
+    """Return a targeted revision instruction, or an empty string for a valid story."""
     count = word_count(story)
     if not MIN_STORY_WORDS <= count <= MAX_STORY_WORDS:
         return (f"The draft has {count} words. Rewrite it as five short sentences, "
@@ -231,6 +248,7 @@ def load_kokoro_model():
 
 
 def load_tts_model(lang_code: str):
+    """Build the Kokoro text-processing pipeline for an American or British voice."""
     # Kokoro uses spaCy's small English pipeline to process narration text.
     text_processing_model = "en_core_web_sm"
 
@@ -250,9 +268,11 @@ def generate_audio(story: str, voice: str = DEFAULT_VOICE) -> bytes:
         raise ValueError(
             f"Narration requires a validated {MIN_STORY_WORDS}–{MAX_STORY_WORDS} word story."
         )
+    # Kokoro voice IDs start with "a" (American) or "b" (British).
     tts = load_tts_model("b" if voice.startswith("b") else "a")
     chunks = []
     with torch.inference_mode():
+        # Kokoro may stream several audio fragments; collect them into one WAV file.
         for _, _, audio in tts(story, voice=voice, speed=NARRATION_SPEED):
             if audio is not None:
                 if hasattr(audio, "detach"):
@@ -268,7 +288,7 @@ def generate_audio(story: str, voice: str = DEFAULT_VOICE) -> bytes:
 
 
 def inject_apple_style():
-    """Apply a dark, Apple-inspired visual system without extra dependencies."""
+    """Inject the complete responsive Streamlit theme without external CSS files."""
     st.markdown(
         """
         <style>
@@ -918,6 +938,7 @@ def render_narration(result: dict, selected_voice: str, refresh: bool):
 
 
 def main():
+    """Build the Streamlit interface and orchestrate the three inference stages."""
     st.set_page_config(
         page_title="Magic Story Maker",
         page_icon="✦",
@@ -941,9 +962,10 @@ def main():
         unsafe_allow_html=True,
     )
 
+    # The decoded PIL image exists only for the current Streamlit rerun.
     image = None
 
-    # Upload and storyteller now sit side by side inside the same lavender card.
+    # Upload and storyteller controls share one setup card.
     with st.container(border=True, key="setup_panel"):
         upload_col, voice_col = st.columns(2, gap="large")
 
@@ -984,6 +1006,8 @@ def main():
             # Filled later, after checking the current image and saved story.
             voice_action_slot = st.empty()
 
+        # Hash the raw upload so changing the picture invalidates the previous result,
+        # while ordinary Streamlit reruns keep the generated story and audio available.
         image_id = hashlib.sha256(uploaded.getvalue()).hexdigest() if uploaded else None
         if st.session_state.get("image_id") != image_id:
             st.session_state["image_id"] = image_id
@@ -991,6 +1015,7 @@ def main():
 
         if uploaded is not None:
             try:
+                # Correct phone/camera orientation before converting to a stable RGB image.
                 with Image.open(io.BytesIO(uploaded.getvalue())) as original:
                     image = ImageOps.exif_transpose(original).convert("RGB")
             except (OSError, ValueError, Image.DecompressionBombError):
@@ -1041,10 +1066,13 @@ def main():
             )
 
             if create_clicked and image is not None:
+                # A new run replaces the previous result progressively: description -> story -> audio.
+                # Saving after each completed stage means useful text survives a later failure.
                 st.session_state.pop("result", None)
                 progress = st.progress(0, text="Looking closely at your picture…")
                 preview = st.empty()
                 try:
+                    # Only one model performs inference at a time on the shared CPU host.
                     with inference_lock():
                         description = run_stage(generate_image_description, image)
                         result = {"description": description, "voice": selected_voice}
@@ -1076,6 +1104,7 @@ def main():
                 render_story(result)
                 refresh_audio = False
                 if result.get("story"):
+                    # Voice changes regenerate only narration; the grounded story remains unchanged.
                     refresh_audio = voice_action_slot.button(
                         "Hear this story in another voice", key="retry_narration",
                         disabled=selected_voice == result.get("voice"),
@@ -1121,5 +1150,6 @@ def main():
         unsafe_allow_html=True,
     )
 
+# Standard entry point for local execution and Streamlit Cloud.
 if __name__ == "__main__":
     main()
