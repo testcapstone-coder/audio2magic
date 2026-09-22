@@ -689,6 +689,32 @@ def inject_kid_friendly_style():
             letter-spacing: -.01em;
             transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important;
         }
+
+        /* Download actions must stay readable even when the browser/OS uses dark mode. */
+        .stDownloadButton > button {
+            background: #f7f4ff !important;
+            border: 1px solid rgba(117,88,232,.28) !important;
+            color: #443b66 !important;
+            -webkit-text-fill-color: #443b66 !important;
+            box-shadow: 0 6px 16px rgba(72,54,140,.08) !important;
+        }
+        .stDownloadButton > button p,
+        .stDownloadButton > button span,
+        .stDownloadButton > button div {
+            color: #443b66 !important;
+            -webkit-text-fill-color: #443b66 !important;
+            opacity: 1 !important;
+        }
+        .stDownloadButton > button svg {
+            color: #7558e8 !important;
+            fill: currentColor !important;
+        }
+        .stDownloadButton > button:hover {
+            background: #eee9ff !important;
+            border-color: rgba(117,88,232,.42) !important;
+            color: #332b54 !important;
+            -webkit-text-fill-color: #332b54 !important;
+        }
         .stButton > button[kind="primary"] {
             border: 0 !important;
             color: #ffffff !important;
@@ -926,13 +952,46 @@ def inject_kid_friendly_style():
             line-height: 1.45;
         }
 
-        details {
-            border: 1px solid rgba(117,88,232,.12) !important;
+        /*
+         * Expanders are rendered with theme-aware BaseWeb styles. Force a light surface
+         * and explicit foreground colors so "grown-up" sections remain legible in dark mode.
+         */
+        details,
+        [data-testid="stExpander"] details {
+            border: 1px solid rgba(117,88,232,.16) !important;
             border-radius: 16px !important;
-            background: rgba(255,255,255,.68) !important;
+            background: rgba(255,255,255,.96) !important;
+            color: var(--ink) !important;
+            overflow: hidden !important;
+        }
+        details > summary,
+        [data-testid="stExpander"] summary {
+            background: #f8f6ff !important;
+            color: #4f466c !important;
+            -webkit-text-fill-color: #4f466c !important;
+            font-weight: 750 !important;
+        }
+        details > summary *,
+        [data-testid="stExpander"] summary * {
+            color: #4f466c !important;
+            -webkit-text-fill-color: #4f466c !important;
+            opacity: 1 !important;
+        }
+        details > summary svg,
+        [data-testid="stExpander"] summary svg {
+            color: #6656a8 !important;
+            fill: currentColor !important;
+        }
+        [data-testid="stExpanderDetails"] {
+            background: #ffffff !important;
             color: var(--ink) !important;
         }
-        details summary { color: #59516f !important; font-weight: 700 !important; }
+        [data-testid="stExpanderDetails"] p,
+        [data-testid="stExpanderDetails"] span,
+        [data-testid="stExpanderDetails"] div {
+            color: #5d5675 !important;
+            -webkit-text-fill-color: #5d5675 !important;
+        }
         .st-key-description_panel { margin-top: 1rem !important; }
         .st-key-description_panel details summary { min-height: 2.45rem !important; }
         .st-key-description_panel [data-testid="stExpanderDetails"] p {
