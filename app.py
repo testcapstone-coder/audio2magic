@@ -863,13 +863,14 @@ def inject_apple_style():
         .st-key-create_story button:disabled p { color: #b7b7bf !important; }
         .st-key-story_panel .story-text { color: #e4fff7 !important; }
         .st-key-retry_narration button:not(:disabled) {
-            background: #0f766e !important;
-            border: 1px solid #5eead4 !important;
+            background: linear-gradient(135deg, #6e5cff 0%, #9b6cff 100%) !important;
+            border: 0 !important;
             color: #ffffff !important;
-            box-shadow: 0 5px 16px rgba(20,184,166,.18) !important;
+            box-shadow: 0 10px 30px rgba(110,92,255,.27) !important;
         }
         .st-key-retry_narration button:not(:disabled):hover {
-            background: #115e59 !important;
+            filter: brightness(1.05) !important;
+            box-shadow: 0 14px 36px rgba(110,92,255,.30) !important;
         }
         .st-key-retry_narration button:disabled,
         .st-key-retry_narration button:disabled:hover {
