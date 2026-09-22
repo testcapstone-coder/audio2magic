@@ -952,6 +952,7 @@ def main():
                 """
                 <div class="section-kicker">Step 1</div>
                 <div class="section-title">Upload Your Picture</div>
+                <div class="section-copy">Choose a JPG or PNG. Clear, colorful images work best.</div>
                 """,
                 unsafe_allow_html=True,
             )
@@ -967,6 +968,7 @@ def main():
                 """
                 <div class="section-kicker">Step 2</div>
                 <div class="section-title">Choose Your Storyteller</div>
+                <div class="section-copy">Pick the voice that will narrate your finished story.</div>
                 """,
                 unsafe_allow_html=True,
             )
@@ -1090,7 +1092,7 @@ def main():
                                 st.write(result["description"])
 
                 if result.get("story") and selected_voice != result["voice"]:
-                    st.info("Choose “Hear this story in another voice” below the voice list to use your selected storyteller.")
+                    st.info("Choose another voice and, click on “Hear this story in another voice” to use your selected storyteller.")
                 if result.get("story"):
                     story_download_col, audio_download_col = st.columns(2, gap="small")
                     with story_download_col:
