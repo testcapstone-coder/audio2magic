@@ -1004,8 +1004,7 @@ def main():
             use_container_width=False,
             key="create_story",
         )
-        if image is None:
-            st.caption("Upload a picture to begin.")
+
 
     # Preview and story start on the same horizontal line.
     preview_col, story_col = st.columns(2, gap="large")
