@@ -288,12 +288,13 @@ def generate_audio(story: str, voice: str = DEFAULT_VOICE) -> bytes:
     return buffer.getvalue()
 
 
-def inject_kid_friendly_style():
-    """Inject a playful, high-contrast interface designed for children aged 3–10."""
+def inject_kid_friendly_style(theme: str = "light"):
+    """Inject the child-friendly UI, using light mode by default with an optional dark palette."""
     st.markdown(
         """
         <style>
         :root {
+            color-scheme: light;
             --navy: #242044;
             --ink: #2f2a4a;
             --muted: #6f6888;
@@ -737,6 +738,28 @@ def inject_kid_friendly_style():
         .stButton > button p,
         .stDownloadButton > button p { font-size: .95rem !important; }
 
+        /* Compact theme switcher: secondary to the storytelling flow but easy to find. */
+        .st-key-theme_toggle .stButton > button {
+            min-height: 2.55rem !important;
+            padding: .38rem .78rem !important;
+            background: rgba(255,255,255,.88) !important;
+            border: 1px solid rgba(117,88,232,.20) !important;
+            color: #514a70 !important;
+            -webkit-text-fill-color: #514a70 !important;
+            box-shadow: 0 6px 16px rgba(72,54,140,.08) !important;
+            white-space: nowrap !important;
+        }
+        .st-key-theme_toggle .stButton > button p {
+            color: #514a70 !important;
+            -webkit-text-fill-color: #514a70 !important;
+            font-size: .86rem !important;
+            font-weight: 760 !important;
+        }
+        .st-key-theme_toggle .stButton > button:hover {
+            background: #f3efff !important;
+            border-color: rgba(117,88,232,.40) !important;
+        }
+
         /* Main creation action is intentionally large and centered. */
         .st-key-create_story {
             display: flex !important;
@@ -1062,6 +1085,327 @@ def inject_kid_friendly_style():
     )
 
 
+    if theme == "dark":
+        # Dark mode only overrides color and contrast. Layout, sizing, and child-friendly
+        # interaction patterns remain identical to the reviewed light version.
+        st.markdown(
+            """
+            <style>
+            :root {
+                color-scheme: dark;
+                --navy: #f7f4ff;
+                --ink: #f3efff;
+                --muted: #c8c1dc;
+                --purple: #9b82ff;
+                --purple-dark: #7e64e8;
+                --pink: #ff86b8;
+                --blue: #78beff;
+                --mint: #67d8b8;
+                --yellow: #ffd86f;
+                --card: rgba(29, 31, 56, .94);
+                --line: rgba(170, 153, 255, .24);
+            }
+
+            .stApp {
+                background:
+                    radial-gradient(circle at 8% 0%, rgba(255,216,111,.16), transparent 24rem),
+                    radial-gradient(circle at 96% 4%, rgba(120,190,255,.18), transparent 28rem),
+                    radial-gradient(circle at 50% 94%, rgba(255,134,184,.14), transparent 32rem),
+                    linear-gradient(180deg, #0d0f22 0%, #12162d 45%, #171428 100%) !important;
+            }
+            [data-testid="stHeader"] {
+                background: rgba(13,15,34,.84) !important;
+                border-bottom-color: rgba(170,153,255,.10) !important;
+            }
+
+            .magic-badge {
+                background: rgba(38,40,70,.88) !important;
+                border-color: rgba(170,153,255,.20) !important;
+                color: #ded7f5 !important;
+                box-shadow: 0 10px 28px rgba(0,0,0,.24) !important;
+            }
+            .hero h1 { color: #f7f4ff !important; text-shadow: 0 10px 30px rgba(0,0,0,.20); }
+            .hero-gradient {
+                background: linear-gradient(90deg, #7fc7ff 0%, #aa8dff 48%, #ff93c2 100%) !important;
+                -webkit-background-clip: text !important;
+                background-clip: text !important;
+                color: transparent !important;
+            }
+            .hero p { color: #d0c9e2 !important; }
+            .flow-pills span {
+                background: rgba(35,38,67,.90) !important;
+                border-color: rgba(170,153,255,.18) !important;
+                color: #eeeaff !important;
+                box-shadow: 0 8px 22px rgba(0,0,0,.18) !important;
+            }
+
+            div[data-testid="stVerticalBlockBorderWrapper"] {
+                border-color: var(--line) !important;
+                box-shadow: 0 20px 54px rgba(0,0,0,.28) !important;
+            }
+            .st-key-setup_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
+                background:
+                    radial-gradient(circle at 4% 6%, rgba(255,216,111,.10), transparent 31%),
+                    radial-gradient(circle at 96% 92%, rgba(120,190,255,.10), transparent 31%),
+                    linear-gradient(145deg, rgba(29,31,56,.97), rgba(25,28,51,.97)) !important;
+                border-color: rgba(170,153,255,.25) !important;
+            }
+            .st-key-story_panel,
+            .st-key-story_panel > div[data-testid="stVerticalBlockBorderWrapper"] {
+                background:
+                    radial-gradient(circle at 92% 6%, rgba(103,216,184,.10), transparent 35%),
+                    linear-gradient(145deg, rgba(28,33,54,.98), rgba(24,39,44,.97)) !important;
+                border-color: rgba(103,216,184,.26) !important;
+            }
+            .section-kicker {
+                background: rgba(155,130,255,.15) !important;
+                border: 1px solid rgba(155,130,255,.16) !important;
+                color: #c7b8ff !important;
+            }
+            .section-title { color: #faf8ff !important; }
+            .section-copy { color: #c8c1dc !important; }
+
+            .stApp p,
+            .stApp label,
+            .stApp [data-testid="stMarkdownContainer"],
+            .stApp [data-testid="stFileUploaderDropzoneInstructions"],
+            .stApp [data-testid="stCaptionContainer"] {
+                color: #f3efff !important;
+            }
+            .stApp small,
+            .stApp [data-testid="stCaptionContainer"] p { color: #c8c1dc !important; }
+
+            [data-testid="stFileUploaderDropzoneInstructions"],
+            [data-testid="stFileUploaderDropzoneInstructions"] *,
+            [data-testid="stFileUploaderFileData"],
+            [data-testid="stFileUploaderFileData"] * {
+                color: #e6e0f6 !important;
+                -webkit-text-fill-color: #e6e0f6 !important;
+            }
+            [data-testid="stFileUploaderDropzone"] {
+                border-color: rgba(155,130,255,.38) !important;
+                background: rgba(34,36,64,.92) !important;
+            }
+            [data-testid="stFileUploaderDropzone"] svg { color: #a992ff !important; }
+            [data-testid="stFileUploaderDropzone"]:hover {
+                border-color: rgba(180,160,255,.72) !important;
+                background: #2b2d50 !important;
+            }
+            [data-testid="stFileUploaderDropzone"] button {
+                border-color: rgba(170,153,255,.32) !important;
+                background: #343657 !important;
+                color: #f6f2ff !important;
+                -webkit-text-fill-color: #f6f2ff !important;
+                box-shadow: 0 8px 18px rgba(0,0,0,.18) !important;
+            }
+            [data-testid="stFileUploaderDropzone"] button p {
+                color: #f6f2ff !important;
+                -webkit-text-fill-color: #f6f2ff !important;
+            }
+            [data-testid="stFileUploaderFileName"],
+            [data-testid="stFileUploaderFileName"] *,
+            [data-testid="stFileUploaderFileData"] > div:first-child,
+            [data-testid="stFileUploaderFileData"] > div:first-child * { color: #bdb6d2 !important; }
+
+            [data-baseweb="select"] > div {
+                border-color: rgba(155,130,255,.34) !important;
+                background: #252744 !important;
+                color: #f7f4ff !important;
+                box-shadow: 0 6px 18px rgba(0,0,0,.18) !important;
+            }
+            [data-baseweb="select"] > div:focus-within {
+                border-color: rgba(180,160,255,.78) !important;
+                box-shadow: 0 0 0 4px rgba(155,130,255,.14) !important;
+            }
+            [data-baseweb="select"] *,
+            [data-baseweb="select"] input,
+            [data-baseweb="select"] svg {
+                color: #f7f4ff !important;
+                -webkit-text-fill-color: #f7f4ff !important;
+            }
+            [data-baseweb="popover"],
+            [data-baseweb="popover"] > div,
+            [data-baseweb="popover"] [data-baseweb="menu"],
+            [data-baseweb="popover"] [role="listbox"],
+            [data-baseweb="menu"],
+            [role="listbox"] {
+                background: #20223d !important;
+                background-color: #20223d !important;
+                color: #f7f4ff !important;
+                -webkit-text-fill-color: #f7f4ff !important;
+            }
+            [data-baseweb="popover"] [role="listbox"],
+            [role="listbox"] {
+                border-color: rgba(170,153,255,.26) !important;
+                box-shadow: 0 18px 42px rgba(0,0,0,.42) !important;
+            }
+            [data-baseweb="popover"] [role="option"],
+            [role="listbox"] [role="option"],
+            [data-baseweb="popover"] [role="option"] *,
+            [role="listbox"] [role="option"] * {
+                background: #20223d !important;
+                color: #f7f4ff !important;
+                -webkit-text-fill-color: #f7f4ff !important;
+            }
+            [data-baseweb="popover"] [role="option"]:hover,
+            [role="listbox"] [role="option"]:hover { background: #31345a !important; }
+            [data-baseweb="popover"] [role="option"][aria-selected="true"],
+            [role="listbox"] [role="option"][aria-selected="true"] { background: #3a3563 !important; }
+
+            .stDownloadButton > button {
+                background: #2a2d4b !important;
+                border-color: rgba(170,153,255,.30) !important;
+                color: #f0ebff !important;
+                -webkit-text-fill-color: #f0ebff !important;
+                box-shadow: 0 7px 18px rgba(0,0,0,.18) !important;
+            }
+            .stDownloadButton > button p,
+            .stDownloadButton > button span,
+            .stDownloadButton > button div {
+                color: #f0ebff !important;
+                -webkit-text-fill-color: #f0ebff !important;
+            }
+            .stDownloadButton > button svg { color: #b8a7ff !important; }
+            .stDownloadButton > button:hover {
+                background: #35385d !important;
+                border-color: rgba(180,160,255,.54) !important;
+                color: #ffffff !important;
+            }
+            .stButton > button[kind="primary"],
+            .st-key-retry_narration button:not(:disabled) {
+                background: linear-gradient(135deg, #5f9ff9 0%, #886cf2 52%, #c66bdb 100%) !important;
+                box-shadow: 0 12px 30px rgba(115,83,230,.34) !important;
+            }
+            .st-key-create_story button:disabled,
+            .st-key-create_story button:disabled:hover,
+            .st-key-retry_narration button:disabled,
+            .st-key-retry_narration button:disabled:hover {
+                background: #2a2c3f !important;
+                color: #8f8aa3 !important;
+                border-color: #3c3e53 !important;
+            }
+            .st-key-create_story button:disabled p,
+            .st-key-retry_narration button:disabled p { color: #8f8aa3 !important; }
+
+            .st-key-theme_toggle .stButton > button {
+                background: #252744 !important;
+                border-color: rgba(170,153,255,.28) !important;
+                color: #eeeaff !important;
+                -webkit-text-fill-color: #eeeaff !important;
+                box-shadow: 0 7px 18px rgba(0,0,0,.18) !important;
+            }
+            .st-key-theme_toggle .stButton > button p {
+                color: #eeeaff !important;
+                -webkit-text-fill-color: #eeeaff !important;
+            }
+            .st-key-theme_toggle .stButton > button:hover {
+                background: #31345a !important;
+                border-color: rgba(180,160,255,.50) !important;
+            }
+
+            .preview-empty {
+                border-color: rgba(120,190,255,.32) !important;
+                background:
+                    radial-gradient(circle at 25% 20%, rgba(255,216,111,.10), transparent 30%),
+                    radial-gradient(circle at 75% 80%, rgba(255,134,184,.08), transparent 34%),
+                    rgba(28,31,54,.76) !important;
+            }
+            .preview-placeholder-icon {
+                background: linear-gradient(145deg, #34375b, #262943) !important;
+                border: 1px solid rgba(170,153,255,.18) !important;
+                box-shadow: 0 14px 30px rgba(0,0,0,.26) !important;
+            }
+            .preview-empty strong { color: #faf8ff !important; }
+            .preview-empty p { color: #c8c1dc !important; }
+            .preview-image-box img {
+                border-color: rgba(233,226,255,.92) !important;
+                background: #1a1d35 !important;
+                box-shadow: 0 20px 46px rgba(0,0,0,.36) !important;
+            }
+
+            [data-testid="stProgress"] > div > div > div > div {
+                background: linear-gradient(90deg, #78beff, #9b82ff, #ff86b8) !important;
+            }
+            [data-testid="stProgress"] > div > div > div { background: #272a43 !important; }
+            [data-testid="stProgress"] p { color: #d3cce5 !important; }
+            [data-testid="stAudio"] { box-shadow: 0 7px 20px rgba(0,0,0,.22) !important; }
+
+            .story-shell {
+                border-color: rgba(103,216,184,.24) !important;
+                background: rgba(31,44,51,.84) !important;
+                box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+            }
+            .story-text { color: #f1fbf8 !important; }
+            .word-chip {
+                background: rgba(103,216,184,.12) !important;
+                border-color: rgba(103,216,184,.20) !important;
+                color: #a9ebd8 !important;
+            }
+            .st-key-story_panel [data-testid="stSpinner"] p { color: #d3cce5 !important; }
+
+            .empty-state {
+                border-color: rgba(170,153,255,.16) !important;
+                background:
+                    radial-gradient(circle at 28% 20%, rgba(255,216,111,.09), transparent 32%),
+                    radial-gradient(circle at 72% 72%, rgba(120,190,255,.08), transparent 35%),
+                    rgba(28,31,54,.72) !important;
+            }
+            .empty-orb {
+                background: linear-gradient(145deg, #36395e, #282a47) !important;
+                border: 1px solid rgba(170,153,255,.18) !important;
+                color: #b9a7ff !important;
+                box-shadow: 0 14px 32px rgba(0,0,0,.26) !important;
+            }
+            .empty-state strong { color: #faf8ff !important; }
+            .empty-state p { color: #c8c1dc !important; }
+
+            details,
+            [data-testid="stExpander"] details {
+                border-color: rgba(170,153,255,.20) !important;
+                background: #1c1f38 !important;
+                color: #f3efff !important;
+            }
+            details > summary,
+            [data-testid="stExpander"] summary {
+                background: #242742 !important;
+                color: #eee9ff !important;
+                -webkit-text-fill-color: #eee9ff !important;
+            }
+            details > summary *,
+            [data-testid="stExpander"] summary * {
+                color: #eee9ff !important;
+                -webkit-text-fill-color: #eee9ff !important;
+            }
+            details > summary svg,
+            [data-testid="stExpander"] summary svg { color: #b9a8ff !important; }
+            [data-testid="stExpanderDetails"] {
+                background: #1a1d34 !important;
+                color: #f3efff !important;
+            }
+            [data-testid="stExpanderDetails"] p,
+            [data-testid="stExpanderDetails"] span,
+            [data-testid="stExpanderDetails"] div {
+                color: #d7d0e8 !important;
+                -webkit-text-fill-color: #d7d0e8 !important;
+            }
+            .st-key-description_panel [data-testid="stExpanderDetails"] p { color: #c9c2db !important; }
+
+            [data-testid="stAlert"] {
+                background: #242742 !important;
+                border-color: rgba(170,153,255,.18) !important;
+                color: #f7f4ff !important;
+            }
+            [data-testid="stAlert"] * {
+                color: inherit !important;
+                -webkit-text-fill-color: currentColor !important;
+            }
+            .footer-note { color: #a9a1be !important; }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
 def image_to_data_uri(image: Image.Image) -> str:
     """Convert a PIL image to a PNG data URI for precise centered preview rendering."""
     buffer = io.BytesIO()
@@ -1129,6 +1473,12 @@ def unlock_narration_action():
     st.session_state["narration_refresh_requested"] = False
 
 
+def toggle_theme():
+    """Switch between the light default and the optional dark color palette."""
+    current = st.session_state.get("ui_theme", "light")
+    st.session_state["ui_theme"] = "dark" if current == "light" else "light"
+
+
 def main():
     """Build the Streamlit interface and orchestrate the three inference stages."""
     st.set_page_config(
@@ -1137,7 +1487,19 @@ def main():
         layout="wide",
         initial_sidebar_state="collapsed",
     )
-    inject_kid_friendly_style()
+    theme = st.session_state.setdefault("ui_theme", "light")
+    inject_kid_friendly_style(theme)
+
+    # Light mode is the default. The switch only changes presentation; story/image state is preserved.
+    _, theme_col = st.columns([7.0, 1.25])
+    with theme_col:
+        st.button(
+            "🌙 Dark mode" if theme == "light" else "☀️ Light mode",
+            key="theme_toggle",
+            use_container_width=True,
+            help="Switch the app colors without changing your picture or story.",
+            on_click=toggle_theme,
+        )
 
     st.markdown(
         """
